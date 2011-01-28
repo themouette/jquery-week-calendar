@@ -213,11 +213,11 @@ $(document).ready(function() {
          var startTime = timeslotTimes[i].start;
          var endTime = timeslotTimes[i].end;
          var startSelected = "";
-         if (startTime.getTime() === calEvent.start.getTime()) {
+         if (Math.round(startTime.getTime()/1000) === Math.round(calEvent.start.getTime()/1000)) {
             startSelected = "selected=\"selected\"";
          }
          var endSelected = "";
-         if (endTime.getTime() === calEvent.end.getTime()) {
+         if (Math.round(endTime.getTime()/1000) === Math.round(calEvent.end.getTime()/1000)) {
             endSelected = "selected=\"selected\"";
          }
          $startTimeField.append("<option value=\"" + startTime + "\" " + startSelected + ">" + timeslotTimes[i].startFormatted + "</option>");
