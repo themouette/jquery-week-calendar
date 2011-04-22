@@ -319,6 +319,7 @@ test("issue #49: wrong calculation of DateLastMilliOfWeek", function() {
   equals(_curDate.toString(), (new Date('Apr 24 2011')).toString(), '_dateLastDayOfWeek returns sunday');
 
   _curDate = _dateLastMilliOfWeek(new Date('Apr 21 2011'));
+
   ok(_curDate instanceof Date, '_dateLastMilliOfWeek returns a date');
   equals(_curDate.toString(), (new Date('Apr 25 2011 00:00:00')).toString(), '_dateLastMilliOfWeek returns next monday midnight');
 
