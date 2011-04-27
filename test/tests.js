@@ -1,6 +1,6 @@
 module('jQuery Week Calendar v2.0-dev');
 function formatTimeZone(){
-  var TZ = -(new Date()).getTimezoneOffset();
+  var TZ = -(new Date('Apr 21 2011')).getTimezoneOffset();
   var TZ = {
     'sign': (TZ < 0 ? '-' : '+'),
     'hour': (Math.floor(TZ / 60)),
@@ -91,7 +91,7 @@ test('Date internationalization', function() {
 
   var $calendar = $('#calendar');
   $calendar.weekCalendar({
-      date: new Date(),
+      date: new Date('Apr 21 2011'),
       firstDayOfWeek: $.datepicker.regional['fr'].firstDay,
       shortDays: $.datepicker.regional['fr'].dayNamesShort,
       longDays: $.datepicker.regional['fr'].dayNames,
@@ -278,7 +278,7 @@ test("issue # 60: eventHeader doesn't take care of use24Hour option", function()
 test("issue #49: wrong calculation of DateLastMilliOfWeek", function() {
   var $calendar = $('#calendar');
   $calendar.weekCalendar({
-    date: new Date(),
+    date: new Date('Apr 21 2011'),
     daysToShow: 7,
     firstDayOfWeek: 1, 
     startOnFirstDayOfWeek: true
@@ -310,15 +310,15 @@ test("issue #49: wrong calculation of DateLastMilliOfWeek", function() {
   var _dateLastMilliOfWeek = function(){return _privateInstance._dateLastMilliOfWeek.apply(_privateInstance, arguments);};
   var _curDate, date;
 
-  _curDate = _dateFirstDayOfWeek(new Date());
+  _curDate = _dateFirstDayOfWeek(new Date('Apr 21 2011'));
   ok(_curDate instanceof Date, '_dateFirstDayOfWeek returns a date');
   equals(_curDate.toString(), (new Date('Apr 18 2011')).toString(), '_dateFirstDayOfWeek returns monday');
 
-  _curDate = _dateLastDayOfWeek(new Date());
+  _curDate = _dateLastDayOfWeek(new Date('Apr 21 2011'));
   ok(_curDate instanceof Date, '_dateLastDayOfWeek returns a date');
   equals(_curDate.toString(), (new Date('Apr 24 2011')).toString(), '_dateLastDayOfWeek returns sunday');
 
-  _curDate = _dateLastMilliOfWeek(new Date());
+  _curDate = _dateLastMilliOfWeek(new Date('Apr 21 2011'));
   ok(_curDate instanceof Date, '_dateLastMilliOfWeek returns a date');
   equals(_curDate.toString(), (new Date('Apr 25 2011 00:00:00')).toString(), '_dateLastMilliOfWeek returns next monday midnight');
 
@@ -326,13 +326,13 @@ test("issue #49: wrong calculation of DateLastMilliOfWeek", function() {
   $calendar.weekCalendar('option', 'firstDayOfWeek', 0);
 
   //Middle of month
-  _curDate = _dateFirstDayOfWeek(new Date());
+  _curDate = _dateFirstDayOfWeek(new Date('Apr 21 2011'));
   equals(_curDate.toString(), (new Date('Apr 17 2011')).toString(), '_dateFirstDayOfWeek returns sunday');
 
-  _curDate = _dateLastDayOfWeek(new Date());
+  _curDate = _dateLastDayOfWeek(new Date('Apr 21 2011'));
   equals(_curDate.toString(), (new Date('Apr 23 2011')).toString(), '_dateLastDayOfWeek returns monday');
 
-  _curDate = _dateLastMilliOfWeek(new Date());
+  _curDate = _dateLastMilliOfWeek(new Date('Apr 21 2011'));
   equals(_curDate.toString(), (new Date('Apr 24 2011 00:00:00')).toString(), '_dateLastMilliOfWeek returns next sunday midnight');
 
   // case date for start of mont
