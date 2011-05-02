@@ -62,28 +62,28 @@ test('date parsing', function(){
   ok($.isFunction(_cleanDate), 'check _cleanDate is a function');
   
   _curdate = _cleanDate(new Date('Fri Jul 16 2010 14:15:00'))
-  ok(_curdate instanceof Date, 'parsed date is a Date object');
-  equal(_curdate.getTime(), new Date('Fri Jul 16 2010 14:15:00').getTime());
+  ok(_curdate instanceof Date, '"new Date(\'Fri Jul 16 2010 14:15:00\')": parsed date is a Date object');
+  equal(_curdate.getTime(), new Date('Fri Jul 16 2010 14:15:00').getTime(), 'expected time');
 
   _curdate = _cleanDate(1276683300000)
-  ok(_curdate instanceof Date, 'parsed date is a Date object');
-  equal(_curdate.getTime(), 1276683300000);
+  ok(_curdate instanceof Date, '"1276683300000": parsed date is a Date object');
+  equal(_curdate.getTime(), 1276683300000, 'expected time');
 
   _curdate = _cleanDate('2010-06-16T12:15:00+02:00')
-  ok(_curdate instanceof Date, 'parsed date is a Date object');
-  equal(_curdate.getTime(), 1276683300000);
+  ok(_curdate instanceof Date, '"2010-06-16T12:15:00+02:00": parsed date is a Date object');
+  equal(_curdate.getTime(), 1276683300000, 'expected time');
 
   _curdate = _cleanDate('2010-06-16T12:15:00.000+02:00')
-  ok(_curdate instanceof Date, 'parsed date is a Date object');
-  equal(_curdate.getTime(), 1276683300000);
+  ok(_curdate instanceof Date, '"2010-06-16T12:15:00.000+02:00": parsed date is a Date object');
+  equal(_curdate.getTime(), 1276683300000, 'expected time');
 
   _curdate = _cleanDate('Wed Jun 16 2010 12:15:00 GMT+0200');
-  ok(_curdate instanceof Date, 'parsed date is a Date object');
-  equal(_curdate.getTime(), 1276683300000);
+  ok(_curdate instanceof Date, '"Wed Jun 16 2010 12:15:00 GMT+0200": parsed date is a Date object');
+  equal(_curdate.getTime(), 1276683300000, 'expected time');
 
   _curdate = _cleanDate('2010-06-16T12:15');
-  ok(_curdate instanceof Date, 'parsed date is a Date object');
-  equal(_curdate.getTime(), 1276683300000);
+  ok(_curdate instanceof Date, '"2010-06-16T12:15": parsed date is a Date object');
+  equal(_curdate.getTime(), 1276683300000, 'expected time');
   
 });
 
