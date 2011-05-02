@@ -2122,8 +2122,7 @@
       H: function(date) { return (date.getHours() < 10 ? '0' : '') + date.getHours(); },
       i: function(date) { return (date.getMinutes() < 10 ? '0' : '') + date.getMinutes(); },
       s: function(date) { return (date.getSeconds() < 10 ? '0' : '') + date.getSeconds(); },
-      u: function(date) { var m = date.getMilliseconds(); return (m < 10 ? '00' : (m < 100 ?
-    '0' : '')) + m; },
+      u: function(date) { var m = date.getMilliseconds(); return (m < 10 ? '00' : (m < 100 ? '0' : '')) + m; },
       // Timezone
       e: function(date) { return 'Not Yet Supported'; },
       I: function(date) { return 'Not Yet Supported'; },

@@ -1,12 +1,12 @@
 module('jQuery Week Calendar v2.0-dev');
-function formatTimeZone(){
+function formatTimeZone() {
   var TZ = -(new Date('Apr 21 2011')).getTimezoneOffset();
   var TZ = {
     'sign': (TZ < 0 ? '-' : '+'),
     'hour': (Math.floor(TZ / 60)),
     'minute': (TZ % 60)};
 
-  return TZ['sign'] + (TZ['hour'] < 10 ? '0' : '') + TZ['hour'] + ":" + (TZ['minute'] < 10 ? '0' : '') + TZ['minute'];
+  return TZ['sign'] + (TZ['hour'] < 10 ? '0' : '') + TZ['hour'] + ':' + (TZ['minute'] < 10 ? '0' : '') + TZ['minute'];
 }
 
 test('Default Options', function() {
@@ -51,7 +51,7 @@ test('Default Options', function() {
 
 });
 
-test('date parsing', function(){
+test('date parsing', function() {
   var $calendar = $('#calendar');
   $calendar.weekCalendar();
 
@@ -60,20 +60,20 @@ test('date parsing', function(){
   var _cleanDate = $calendar.data('weekCalendar')._cleanDate,
       _curdate;
   ok($.isFunction(_cleanDate), 'check _cleanDate is a function');
-  
-  _curdate = _cleanDate(new Date('Fri Jul 16 2010 14:15:00'))
+
+  _curdate = _cleanDate(new Date('Fri Jul 16 2010 14:15:00'));
   ok(_curdate instanceof Date, '"new Date(\'Fri Jul 16 2010 14:15:00\')": parsed date is a Date object');
   equal(_curdate.getTime(), new Date('Fri Jul 16 2010 14:15:00').getTime(), 'expected time');
 
-  _curdate = _cleanDate(1276683300000)
+  _curdate = _cleanDate(1276683300000);
   ok(_curdate instanceof Date, '"1276683300000": parsed date is a Date object');
   equal(_curdate.getTime(), 1276683300000, 'expected time');
 
-  _curdate = _cleanDate('2010-06-16T12:15:00+02:00')
+  _curdate = _cleanDate('2010-06-16T12:15:00+02:00');
   ok(_curdate instanceof Date, '"2010-06-16T12:15:00+02:00": parsed date is a Date object');
   equal(_curdate.getTime(), 1276683300000, 'expected time');
 
-  _curdate = _cleanDate('2010-06-16T12:15:00.000+02:00')
+  _curdate = _cleanDate('2010-06-16T12:15:00.000+02:00');
   ok(_curdate instanceof Date, '"2010-06-16T12:15:00.000+02:00": parsed date is a Date object');
   equal(_curdate.getTime(), 1276683300000, 'expected time');
 
@@ -84,7 +84,7 @@ test('date parsing', function(){
   _curdate = _cleanDate('2010-06-16T12:15');
   ok(_curdate instanceof Date, '"2010-06-16T12:15": parsed date is a Date object');
   equal(_curdate.getTime(), 1276683300000, 'expected time');
-  
+
 });
 
 test('Date internationalization', function() {
@@ -109,15 +109,15 @@ test('Date internationalization', function() {
 
 
   //Barbarian test
-  $calendar.weekCalendar('option',{
+  $calendar.weekCalendar('option', {
                               dateFormat: 'd D j l N S w F m M n t Y y a A g G h H i s O P Z r U',
                               firstDayOfWeek: $.datepicker.regional['en-GB'].firstDay,
                               shortDays: $.datepicker.regional['en-GB'].dayNamesShort,
                               longDays: $.datepicker.regional['en-GB'].dayNames,
                               shortMonths: $.datepicker.regional['en-GB'].monthNamesShort,
                               longMonths: $.datepicker.regional['en-GB'].monthNames
-                          }); 
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200')), '01 Fri 1 Friday 5 st 5 April 04 Apr 4 30 2011 11 pm PM 2 14 02 14 50 32 +0200 +02:00 7200 Fri, 01 Apr 2011 14:50:32 +0200 1301662232'); 
+                          });
+  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200')), '01 Fri 1 Friday 5 st 5 April 04 Apr 4 30 2011 11 pm PM 2 14 02 14 50 32 +0200 +02:00 7200 Fri, 01 Apr 2011 14:50:32 +0200 1301662232');
 
 //Day
 
@@ -271,16 +271,16 @@ test("issue # 60: eventHeader doesn't take care of use24Hour option", function()
   same(eventHeaderFunc(_events[0], $calendar), '13:15 -> 14:15');
   same(eventHeaderFunc(_events[1], $calendar), '10:15 -> 12:15');
 
-  //check for title when 
+  //check for title when
 
 });
 //Test date Last|First Day|Milli OfWeek()
-test("issue #49: wrong calculation of DateLastMilliOfWeek", function() {
+test('issue #49: wrong calculation of DateLastMilliOfWeek', function() {
   var $calendar = $('#calendar');
   $calendar.weekCalendar({
     date: new Date('Apr 21 2011'),
     daysToShow: 7,
-    firstDayOfWeek: 1, 
+    firstDayOfWeek: 1,
     startOnFirstDayOfWeek: true
   });
 
@@ -305,9 +305,9 @@ test("issue #49: wrong calculation of DateLastMilliOfWeek", function() {
   ok($.isFunction(_privateInstance._dateLastMilliOfWeek), 'check _dateLastMilliOfWeek is a function');
 
   // create a closure to ease testing
-  var _dateLastDayOfWeek = function(){return _privateInstance._dateLastDayOfWeek.apply(_privateInstance, arguments);};
-  var _dateFirstDayOfWeek = function(){return _privateInstance._dateFirstDayOfWeek.apply(_privateInstance, arguments);};
-  var _dateLastMilliOfWeek = function(){return _privateInstance._dateLastMilliOfWeek.apply(_privateInstance, arguments);};
+  var _dateLastDayOfWeek = function() {return _privateInstance._dateLastDayOfWeek.apply(_privateInstance, arguments);};
+  var _dateFirstDayOfWeek = function() {return _privateInstance._dateFirstDayOfWeek.apply(_privateInstance, arguments);};
+  var _dateLastMilliOfWeek = function() {return _privateInstance._dateLastMilliOfWeek.apply(_privateInstance, arguments);};
   var _curDate, date;
 
   _curDate = _dateFirstDayOfWeek(new Date('Apr 21 2011'));
