@@ -2132,8 +2132,8 @@
       T: function(date) { var m = date.getMonth(); date.setMonth(0); var result = date.toTimeString().replace(/^.+ \(?([^\)]+)\)?$/, '$1'); date.setMonth(m); return result;},
       Z: function(date) { return -date.getTimezoneOffset() * 60; },
       // Full Date/Time
-      c: function(date, calendar) { return calendar._formatDate('Y-m-d\\TH:i:sP'); }, // Fixed now
-      r: function(date) { return date.toString(); },
+      c: function(date, calendar) { return calendar._formatDate(date, 'Y-m-d\\TH:i:sP'); }, // Fixed now
+      r: function(date, calendar) { return calendar._formatDate(date, 'D, d M Y H:i:s O'); },
       U: function(date) { return date.getTime() / 1000; }
       },
 
