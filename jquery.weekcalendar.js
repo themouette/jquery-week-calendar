@@ -437,9 +437,9 @@
             var endMillis = startMillis + options.millisPerTimeslot;
             times[i] = {
                 start: new Date(startMillis),
-                startFormatted: this._formatDate(new Date(startMillis), options.timeFormat),
+                startFormatted: this.formatTime(new Date(startMillis), options.timeFormat),
                 end: new Date(endMillis),
-                endFormatted: this._formatDate(new Date(endMillis), options.timeFormat)
+                endFormatted: this.formatTime(new Date(endMillis), options.timeFormat)
             };
             startMillis = endMillis;
           }
