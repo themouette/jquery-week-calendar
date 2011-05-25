@@ -65,6 +65,7 @@
         scrollToHourMillis: 500,
         allowCalEventOverlap: false,
         overlapEventsSeparate: false,
+        totalEventsWidthPercentInOneColumn : 100,
         readonly: false,
         allowEventCreation: true,
         draggable: function(calEvent, element) {
@@ -1438,11 +1439,11 @@
 
                   // do we want events to be displayed as overlapping
                   if (self.options.overlapEventsSeparate) {
-                      var newWidth = 100 / curGroups.length;
+                      var newWidth = self.options.totalEventsWidthPercentInOneColumn / curGroups.length;
                       var newLeft = groupIndex * newWidth;
                   } else {
                       // TODO what happens when the group has more than 10 elements
-                      var newWidth = 100 - ((curGroups.length - 1) * 10);
+                      var newWidth = self.options.totalEventsWidthPercentInOneColumn - ((curGroups.length - 1) * 10);
                       var newLeft = groupIndex * 10;
                   }
                   $.each(curGroup, function() {
