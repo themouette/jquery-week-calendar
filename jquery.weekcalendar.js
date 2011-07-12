@@ -511,6 +511,12 @@
       _setOption: function(key, value) {
         var self = this;
         if (self.options[key] != value) {
+          // event callback change, no need to re-render the events
+          if (key == 'beforeEventNew') {
+            self.options[key] = value;
+            return;
+          }
+
           // this could be made more efficient at some stage by caching the
           // events array locally in a store but this should be done in conjunction
           // with a proper binding model.
@@ -1070,8 +1076,10 @@
             var $newEvent = $weekDay.find('.wc-new-cal-event-creating');
 
             if ($newEvent.length) {
+                var createdFromSingleClick = !$newEvent.hasClass('ui-resizable-resizing');
+
                 //if even created from a single click only, default height
-                if (!$newEvent.hasClass('ui-resizable-resizing')) {
+                if (createdFromSingleClick) {
                   $newEvent.css({height: options.timeslotHeight * options.defaultEventLength}).show();
                 }
                 var top = parseInt($newEvent.css('top'));
@@ -1099,6 +1107,11 @@
                   self._adjustOverlappingEvents($weekDay);
                 }
 
+                self._trigger('beforeEventNew', event, {
+                  'calEvent': newCalEvent,
+                  'createdFromSingleClick': createdFromSingleClick,
+                  'calendar': self.element
+                });
                 options.eventNew(newCalEvent, $renderedCalEvent, freeBusyManager, self.element, event);
             }
           });
