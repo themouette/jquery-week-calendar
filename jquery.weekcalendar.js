@@ -704,6 +704,13 @@
                       var _id = 'wc-switch-display-' + option;
                       var _input = $('<input type="radio" id="' + _id + '" name="wc-switch-display" class="wc-switch-display"/>');
                       var _label = $('<label for="' + _id + '"></label>');
+
+                      if(typeof(I18n) != 'undefined'){
+                          label = I18n.t(label);
+                      }
+
+                      //var localizedLabel = I18n.t(label);
+
                       _label.html(label);
                       _input.val(option);
                       if (parseInt(self.options.daysToShow, 10) === parseInt(option, 10)) {
@@ -1040,7 +1047,14 @@
 
                 var $newEvent = $('<div class=\"wc-cal-event wc-new-cal-event wc-new-cal-event-creating\"></div>');
 
-                $newEvent.css({lineHeight: (options.timeslotHeight - 2) + 'px', fontSize: (options.timeslotHeight / 2) + 'px'});
+                var css = {
+                    'background-color': 'yellow',
+                    lineHeight: (options.timeslotHeight - 2) + 'px',
+                    fontSize: (options.timeslotHeight / 2) + 'px'
+                };
+
+                //$newEvent.css({lineHeight: (options.timeslotHeight - 2) + 'px', fontSize: (options.timeslotHeight / 2) + 'px'});
+                $newEvent.css(css);
                 $target.append($newEvent);
 
                 var columnOffset = $target.offset().top;
@@ -1409,16 +1423,31 @@
 
           var eventClass, eventHtml, $calEventList, $modifiedEvent;
 
+          /* add color support
+          *  @author Daniel Schmidt, Datenspiel GmbH 2011
+          * */
+          var eventCSS = {
+              lineHeight: (options.textSize + 2) + 'px',
+              fontSize: options.textSize + 'px'
+          };
+
+
+          if(calEvent.hasOwnProperty("color")){
+              jQuery.extend(eventCSS,{'background-color': calEvent.color});
+          }
+
+          /* end color support */
+
           eventClass = calEvent.id ? 'wc-cal-event' : 'wc-cal-event wc-new-cal-event';
           eventHtml = '<div class=\"' + eventClass + ' ui-corner-all\">';
           eventHtml += '<div class=\"wc-time ui-corner-top\"></div>';
           eventHtml += '<div class=\"wc-title\"></div></div>';
-
           $weekDay.each(function() {
             var $calEvent = $(eventHtml);
+
             $modifiedEvent = options.eventRender(calEvent, $calEvent);
             $calEvent = $modifiedEvent ? $modifiedEvent.appendTo($(this)) : $calEvent.appendTo($(this));
-            $calEvent.css({lineHeight: (options.textSize + 2) + 'px', fontSize: options.textSize + 'px'});
+            $calEvent.css(eventCSS);
 
             self._refreshEventDetails(calEvent, $calEvent);
             self._positionEvent($(this), $calEvent);
