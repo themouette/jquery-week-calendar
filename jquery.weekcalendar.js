@@ -1181,7 +1181,10 @@
                 // only prevent error with jQuery 1.5
                 // see issue #34. thanks to dapplebeforedawn
                 // (https://github.com/themouette/jquery-week-calendar/issues#issue/34)
-                if (errorThrown != 'abort') {
+                // for 1.5+, aborted request mean errorThrown == 'abort'
+                // for prior version it means !errorThrown && !XMLHttpRequest.status
+                // fixes #55
+                if (errorThrown != 'abort' || ('' == errorThrown && !XMLHttpRequest.status)) {
                   alert('unable to get data, error:' + textStatus);
                 }
               },
