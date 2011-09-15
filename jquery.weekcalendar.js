@@ -1352,11 +1352,12 @@
               var maxHour = self.options.businessHours.limitDisplay ? self.options.businessHours.end : 24;
               var minHour = self.options.businessHours.limitDisplay ? self.options.businessHours.start : 0;
               var start = new Date(initialStart);
-              var endDay = initialEnd.getDay();
+              var startDate = self._formatDate(start, 'Ymd');
+              var endDate = self._formatDate(initialEnd, 'Ymd');
               var $weekDay;
               var isMultiday = false;
 
-              while (start.getDay() < endDay) {
+              while (startDate < endDate) {
                 calEvent.start = start;
                 //end of this virual calEvent is set to the end of the day
                 calEvent.end.setFullYear(start.getFullYear());
@@ -1373,6 +1374,7 @@
                 start.setHours(minHour);
                 start.setMinutes(0);
                 start.setSeconds(0);
+                startDate = self._formatDate(start, 'Ymd');
                 isMultiday = true;
               }
               if (start <= initialEnd) {
