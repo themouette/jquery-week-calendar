@@ -1184,7 +1184,7 @@
                 // for 1.5+, aborted request mean errorThrown == 'abort'
                 // for prior version it means !errorThrown && !XMLHttpRequest.status
                 // fixes #55
-                if (errorThrown != 'abort' || ('' == errorThrown && !XMLHttpRequest.status)) {
+                if (errorThrown != 'abort' && XMLHttpRequest.status != 0) {
                   alert('unable to get data, error:' + textStatus);
                 }
               },
