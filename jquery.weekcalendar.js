@@ -1041,7 +1041,10 @@
                 var $newEvent = $('<div class=\"wc-cal-event wc-new-cal-event wc-new-cal-event-creating\"></div>');
 
                 $newEvent.css({lineHeight: (options.timeslotHeight - 2) + 'px', fontSize: (options.timeslotHeight / 2) + 'px'});
-                $target.append($newEvent);
+                
+                if (!options.preventDragOnEventCreation) {
+                  $target.append($newEvent);
+                }
 
                 var columnOffset = $target.offset().top;
                 var clickY = event.pageY - columnOffset;
