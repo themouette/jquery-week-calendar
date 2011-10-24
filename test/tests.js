@@ -14,40 +14,40 @@ test('Default Options', function() {
     var $calendar = $('#calendar');
     $calendar.weekCalendar();
 
-  expect(25);
+    expect(30);
 
-	same($calendar.weekCalendar('option', 'alwaysDisplayTimeMinutes'), true);
-	same($calendar.weekCalendar('option', 'use24Hour'), false);
-	same($calendar.weekCalendar('option', 'daysToShow'), 7);
-	same($calendar.weekCalendar('option', 'minBodyHeight'), 100);
-	same($calendar.weekCalendar('option', 'useShortDayNames'), false);
-	same($calendar.weekCalendar('option', 'timeSeparator'), ' to ');
-	same($calendar.weekCalendar('option', 'startParam'), 'start');
-	same($calendar.weekCalendar('option', 'endParam'), 'end');
-/*	same($("#calendar").weekCalendar('option','businessHours.start'), 8);
-	same($("#calendar").weekCalendar('option','businessHours.end'), 18);
-	same($("#calendar").weekCalendar('option','businessHours.limitDisplay'), false);
-*/
-    same($calendar.weekCalendar('option', 'newEventText'), 'New Event');
-    same($calendar.weekCalendar('option', 'timeslotHeight'), 20);
-    same($calendar.weekCalendar('option', 'defaultEventLength'), 2);
-    same($calendar.weekCalendar('option', 'timeslotsPerHour'), 4);
-    same($calendar.weekCalendar('option', 'minDate'), null);
-    same($calendar.weekCalendar('option', 'maxDate'), null);
-    same($calendar.weekCalendar('option', 'buttons'), true);
-    same($calendar.weekCalendar('option', 'scrollToHourMillis'), 500);
-    same($calendar.weekCalendar('option', 'allowCalEventOverlap'), false);
-    same($calendar.weekCalendar('option', 'overlapEventsSeparate'), false);
-    same($calendar.weekCalendar('option', 'readonly'), false);
-    same($calendar.weekCalendar('option', 'allowEventCreation'), true);
+    deepEqual($calendar.weekCalendar('option', 'alwaysDisplayTimeMinutes'), true);
+    deepEqual($calendar.weekCalendar('option', 'use24Hour'), false);
+    deepEqual($calendar.weekCalendar('option', 'firstDayOfWeek')(), 0);
+    deepEqual($calendar.weekCalendar('option', 'daysToShow'), 7);
+    deepEqual($calendar.weekCalendar('option', 'minBodyHeight'), 100);
+    deepEqual($calendar.weekCalendar('option', 'useShortDayNames'), false);
+    deepEqual($calendar.weekCalendar('option', 'timeSeparator'), ' to ');
+    deepEqual($calendar.weekCalendar('option', 'startParam'), 'start');
+    deepEqual($calendar.weekCalendar('option', 'endParam'), 'end');
+    deepEqual($calendar.weekCalendar('option', 'businessHours').start, 8);
+    deepEqual($calendar.weekCalendar('option', 'businessHours').end, 18);
+    deepEqual($calendar.weekCalendar('option', 'businessHours').limitDisplay, false);
+    deepEqual($calendar.weekCalendar('option', 'newEventText'), 'New Event');
+    deepEqual($calendar.weekCalendar('option', 'timeslotHeight'), 20);
+    deepEqual($calendar.weekCalendar('option', 'defaultEventLength'), 2);
+    deepEqual($calendar.weekCalendar('option', 'timeslotsPerHour'), 4);
+    deepEqual($calendar.weekCalendar('option', 'minDate'), null);
+    deepEqual($calendar.weekCalendar('option', 'maxDate'), null);
+    deepEqual($calendar.weekCalendar('option', 'buttons'), true);
+    deepEqual($calendar.weekCalendar('option', 'scrollToHourMillis'), 500);
+    deepEqual($calendar.weekCalendar('option', 'allowCalEventOverlap'), false);
+    deepEqual($calendar.weekCalendar('option', 'overlapEventsSeparate'), false);
+    deepEqual($calendar.weekCalendar('option', 'readonly'), false);
+    deepEqual($calendar.weekCalendar('option', 'allowEventCreation'), true);
 
-    same($calendar.weekCalendar('option', 'displayOddEven'), false);
-    same($calendar.weekCalendar('option', 'textSize'), 13);
-    same($calendar.weekCalendar('option', 'headerSeparator'), '<br />');
-    same($calendar.weekCalendar('option', 'getHeaderDate'), null);
-    same($calendar.weekCalendar('option', 'preventDragOnEventCreation'), false);
+    deepEqual($calendar.weekCalendar('option', 'displayOddEven'), false);
+    deepEqual($calendar.weekCalendar('option', 'textSize'), 13);
+    deepEqual($calendar.weekCalendar('option', 'headerSeparator'), '<br />');
+    deepEqual($calendar.weekCalendar('option', 'getHeaderDate'), null);
+    deepEqual($calendar.weekCalendar('option', 'preventDragOnEventCreation'), false);
 
-    //same($("#calendar").weekCalendar('option','draggable'), true);
+    deepEqual($calendar.weekCalendar('option', 'draggable')(), true);
 
 });
 
@@ -103,9 +103,9 @@ test('Date internationalization', function() {
   expect(53);
 
   // default format
-  same($calendar.weekCalendar('formatDate', new Date('Apr 20 2011 14:50:32 GMT+0200')), '20 Avril 11');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 20 2011 14:50:32 GMT+0200')), '20 Avril 11');
   // force format
-  same($calendar.weekCalendar('formatDate', new Date('Apr 20 2011 14:50:32 GMT+0200'), 'l j M Y'), 'Mercredi 20 Avril 2011');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 20 2011 14:50:32 GMT+0200'), 'l j M Y'), 'Mercredi 20 Avril 2011');
 
 
   //Barbarian test
@@ -117,119 +117,119 @@ test('Date internationalization', function() {
                               shortMonths: $.datepicker.regional['en-GB'].monthNamesShort,
                               longMonths: $.datepicker.regional['en-GB'].monthNames
                           });
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200')), '01 Fri 1 Friday 5 st 5 April 04 Apr 4 30 2011 11 pm PM 2 14 02 14 50 32 +0200 +02:00 7200 Fri, 01 Apr 2011 14:50:32 +0200 1301662232');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200')), '01 Fri 1 Friday 5 st 5 April 04 Apr 4 30 2011 11 pm PM 2 14 02 14 50 32 +0200 +02:00 7200 Fri, 01 Apr 2011 14:50:32 +0200 1301662232');
 
 //Day
 
   //test 'd' - 01 to 31 Day
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'd'), '01');
-  same($calendar.weekCalendar('formatDate', new Date('Apr 10 2011 14:50:32 GMT+0200'), 'd'), '10');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'd'), '01');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 10 2011 14:50:32 GMT+0200'), 'd'), '10');
 
   //test 'j' - 1 to 31 Day
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'j'), '1');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'j'), '1');
 
   //test 'D' Three letter Day
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'D'), 'Fri');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'D'), 'Fri');
 
   //test 'l' - Full Text Day
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'l'), 'Friday');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'l'), 'Friday');
 
   //test 'N' - number of the day in the week
-  same($calendar.weekCalendar('formatDate', new Date('Apr 18 2011 14:50:32 GMT+0200'), 'N'), '1');
-  same($calendar.weekCalendar('formatDate', new Date('Apr 19 2011 14:50:32 GMT+0200'), 'N'), '2');
-  same($calendar.weekCalendar('formatDate', new Date('Apr 20 2011 14:50:32 GMT+0200'), 'N'), '3');
-  same($calendar.weekCalendar('formatDate', new Date('Apr 21 2011 14:50:32 GMT+0200'), 'N'), '4');
-  same($calendar.weekCalendar('formatDate', new Date('Apr 22 2011 14:50:32 GMT+0200'), 'N'), '5');
-  same($calendar.weekCalendar('formatDate', new Date('Apr 23 2011 14:50:32 GMT+0200'), 'N'), '6');
-  same($calendar.weekCalendar('formatDate', new Date('Apr 24 2011 14:50:32 GMT+0200'), 'N'), '7');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 18 2011 14:50:32 GMT+0200'), 'N'), '1');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 19 2011 14:50:32 GMT+0200'), 'N'), '2');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 20 2011 14:50:32 GMT+0200'), 'N'), '3');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 21 2011 14:50:32 GMT+0200'), 'N'), '4');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 22 2011 14:50:32 GMT+0200'), 'N'), '5');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 23 2011 14:50:32 GMT+0200'), 'N'), '6');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 24 2011 14:50:32 GMT+0200'), 'N'), '7');
 
   //test 'S' - Ordinal suffix
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'S'), 'st');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'S'), 'st');
 
   //test 'w' - Numeric representation
-  same($calendar.weekCalendar('formatDate', new Date('Apr 18 2011 14:50:32 GMT+0200'), 'w'), '1');
-  same($calendar.weekCalendar('formatDate', new Date('Apr 19 2011 14:50:32 GMT+0200'), 'w'), '2');
-  same($calendar.weekCalendar('formatDate', new Date('Apr 20 2011 14:50:32 GMT+0200'), 'w'), '3');
-  same($calendar.weekCalendar('formatDate', new Date('Apr 21 2011 14:50:32 GMT+0200'), 'w'), '4');
-  same($calendar.weekCalendar('formatDate', new Date('Apr 22 2011 14:50:32 GMT+0200'), 'w'), '5');
-  same($calendar.weekCalendar('formatDate', new Date('Apr 23 2011 14:50:32 GMT+0200'), 'w'), '6');
-  same($calendar.weekCalendar('formatDate', new Date('Apr 24 2011 14:50:32 GMT+0200'), 'w'), '0');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 18 2011 14:50:32 GMT+0200'), 'w'), '1');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 19 2011 14:50:32 GMT+0200'), 'w'), '2');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 20 2011 14:50:32 GMT+0200'), 'w'), '3');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 21 2011 14:50:32 GMT+0200'), 'w'), '4');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 22 2011 14:50:32 GMT+0200'), 'w'), '5');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 23 2011 14:50:32 GMT+0200'), 'w'), '6');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 24 2011 14:50:32 GMT+0200'), 'w'), '0');
 
 //Month
 
   //test 'F' - Full Text
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'F'), 'April');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'F'), 'April');
 
   //test 'm' - 01 to 12
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'm'), '04');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'm'), '04');
 
   //test 'M' -Three letter
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'M'), 'Apr');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'M'), 'Apr');
 
   //test 'n' - 1 to 12
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'n'), '4');
-  same($calendar.weekCalendar('formatDate', new Date('Nov 01 2011 14:50:32 GMT+0200'), 'n'), '11');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'n'), '4');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Nov 01 2011 14:50:32 GMT+0200'), 'n'), '11');
 
   //test 't' -number of the day in month
-    same($calendar.weekCalendar('formatDate', new Date('Feb 01 2011 14:50:32 GMT+0200'), 't'), '28');
-    same($calendar.weekCalendar('formatDate', new Date('Feb 01 1900 14:50:32 GMT+0200'), 't'), '28');
-    same($calendar.weekCalendar('formatDate', new Date('Feb 01 2000 14:50:32 GMT+0200'), 't'), '29');
-    same($calendar.weekCalendar('formatDate', new Date('Feb 01 2004 14:50:32 GMT+0200'), 't'), '29');
-    same($calendar.weekCalendar('formatDate', new Date('Jun 01 2011 14:50:32 GMT+0200'), 't'), '30');
-    same($calendar.weekCalendar('formatDate', new Date('May 01 2011 14:50:32 GMT+0200'), 't'), '31');
+    deepEqual($calendar.weekCalendar('formatDate', new Date('Feb 01 2011 14:50:32 GMT+0200'), 't'), '28');
+    deepEqual($calendar.weekCalendar('formatDate', new Date('Feb 01 1900 14:50:32 GMT+0200'), 't'), '28');
+    deepEqual($calendar.weekCalendar('formatDate', new Date('Feb 01 2000 14:50:32 GMT+0200'), 't'), '29');
+    deepEqual($calendar.weekCalendar('formatDate', new Date('Feb 01 2004 14:50:32 GMT+0200'), 't'), '29');
+    deepEqual($calendar.weekCalendar('formatDate', new Date('Jun 01 2011 14:50:32 GMT+0200'), 't'), '30');
+    deepEqual($calendar.weekCalendar('formatDate', new Date('May 01 2011 14:50:32 GMT+0200'), 't'), '31');
 
 
 //Year
 
   //test 'Y' - full Year
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'Y'), '2011');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'Y'), '2011');
 
   //test 'y' - short Year
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'y'), '11');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'y'), '11');
 
 //Time
   //test 'a' - am or pm
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'a'), 'pm');
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 11:50:32 GMT+0200'), 'a'), 'am');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'a'), 'pm');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 11:50:32 GMT+0200'), 'a'), 'am');
 
 
   //test 'A' - AM or PM
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'A'), 'PM');
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 11:50:32 GMT+0200'), 'A'), 'AM');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'A'), 'PM');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 11:50:32 GMT+0200'), 'A'), 'AM');
 
   //test 'g' and 'G' - 12h&24 format-(1 to 12) and (0 to 23)
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'g'), '2');
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'G'), '14');
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 00:50:32 GMT+0200'), 'G'), '0');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'g'), '2');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'G'), '14');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 00:50:32 GMT+0200'), 'G'), '0');
 
   //test 'h' and 'H' - 12h&24 format-(01 to 12) and (00 to 23)
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'h'), '02');
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'H'), '14');
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 00:50:32 GMT+0200'), 'H'), '00');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'h'), '02');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'H'), '14');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 00:50:32 GMT+0200'), 'H'), '00');
 
   //test 'i' - minute (00 to 59)
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:00:32 GMT+0200'), 'i'), '00');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:00:32 GMT+0200'), 'i'), '00');
 
   //test 's' - sec (00 to 59)
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:00:32 GMT+0200'), 's'), '32');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:00:32 GMT+0200'), 's'), '32');
 
 //Timezone
   //test 'O' - Greenwitch difference (+0200)
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:00:32 GMT+0200'), 'O'), '+0200');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:00:32 GMT+0200'), 'O'), '+0200');
 
   //test 'P' - Greenwitch difference (+02:00)
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:00:32 GMT+0200'), 'P'), '+02:00');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:00:32 GMT+0200'), 'P'), '+02:00');
 
   //test 'Z' - Greenwitch difference in sec (+0200)
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:00:32 GMT+0200'), 'Z'), '7200');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:00:32 GMT+0200'), 'Z'), '7200');
 
 //FullTime
 
   //test 'r' - RFC2822 : Thu, 21 Dec 2000 16:01:07 +0200
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:51:32 GMT+0200'), 'r'), 'Fri, 01 Apr 2011 14:51:32 +0200');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:51:32 GMT+0200'), 'r'), 'Fri, 01 Apr 2011 14:51:32 +0200');
 
   //test 'U'- TimeStamp (since 1/1/1970)
-  same($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'U'), '1301662232');
+  deepEqual($calendar.weekCalendar('formatDate', new Date('Apr 01 2011 14:50:32 GMT+0200'), 'U'), '1301662232');
 
 });
 
@@ -262,14 +262,14 @@ test("issue # 60: eventHeader doesn't take care of use24Hour option", function()
   ok($.isFunction(eventHeaderFunc), 'check eventHeader is a function');
 
   // test without use24Hour option
-  same(eventHeaderFunc(_events[0], $calendar), '01:15 pm -> 02:15 pm');
-  same(eventHeaderFunc(_events[1], $calendar), '10:15 am -> 12:15 pm');
+  deepEqual(eventHeaderFunc(_events[0], $calendar), '01:15 pm -> 02:15 pm');
+  deepEqual(eventHeaderFunc(_events[1], $calendar), '10:15 am -> 12:15 pm');
 
   // now force use24Hour to true
   $calendar.weekCalendar('option', 'use24Hour', true);
 
-  same(eventHeaderFunc(_events[0], $calendar), '13:15 -> 14:15');
-  same(eventHeaderFunc(_events[1], $calendar), '10:15 -> 12:15');
+  deepEqual(eventHeaderFunc(_events[0], $calendar), '13:15 -> 14:15');
+  deepEqual(eventHeaderFunc(_events[1], $calendar), '10:15 -> 12:15');
 
   //check for title when
 
