@@ -896,7 +896,6 @@
 
           //now let's display oddEven placeholders
           for (var i = 1; i <= options.daysToShow; i++) {
-            if (options.displayOddEven) {
               if (!showAsSeparatedUser) {
                 oddEven = (oddEven == 'odd' ? 'even' : 'odd');
                 renderRow += '<td class=\"wc-day-column day-' + i + '\">';
@@ -915,7 +914,6 @@
                     renderRow += '</div>';
                     renderRow += '</td>';
                 }
-              }
             }
           }
           renderRow += '</tr>';
@@ -1361,8 +1359,8 @@
                 calEvent.start = start;
                 //end of this virual calEvent is set to the end of the day
                 calEvent.end.setFullYear(start.getFullYear());
-                calEvent.end.setMonth(start.getMonth());
                 calEvent.end.setDate(start.getDate());
+                calEvent.end.setMonth(start.getMonth());
                 calEvent.end.setHours(maxHour);
                 calEvent.end.setMinutes(0);
                 calEvent.end.setSeconds(0);
