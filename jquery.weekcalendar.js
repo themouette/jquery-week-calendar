@@ -1105,12 +1105,17 @@
                   self._adjustOverlappingEvents($weekDay);
                 }
 
-                self._trigger('beforeEventNew', event, {
+                var proceed = self._trigger('beforeEventNew', event, {
                   'calEvent': newCalEvent,
                   'createdFromSingleClick': createdFromSingleClick,
                   'calendar': self.element
                 });
-                options.eventNew(newCalEvent, $renderedCalEvent, freeBusyManager, self.element, event);
+  							if (proceed) {
+									options.eventNew(newCalEvent, $renderedCalEvent, freeBusyManager, self.element, event);
+								}
+								else {
+									$($renderedCalEvent).remove();
+								}
             }
           });
       },
