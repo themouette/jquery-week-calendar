@@ -681,6 +681,14 @@
                     return false;
                   });
 
+            $calendarContainer.find('.wc-nav .wc-jump')
+              .button({
+                icons: {primary: 'ui-icon-calendar'}})
+              .click(function() {
+                    //self.today();
+                    return false;
+                  });
+
             $calendarContainer.find('.wc-nav .wc-prev')
               .button({
                 text: false,
