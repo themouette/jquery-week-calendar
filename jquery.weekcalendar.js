@@ -664,9 +664,9 @@
               calendarNavHtml += '<div class=\"wc-display\"></div>';
               calendarNavHtml += '<div class=\"wc-nav\">';
                 calendarNavHtml += '<button class=\"wc-prev\">' + options.buttonText.lastWeek + '</button>';
+                calendarNavHtml += '<input type=\"text\" class=\"wc-jump\" value=\"' + options.buttonText.jump + '\"/>';
                 calendarNavHtml += '<button class=\"wc-today\">' + options.buttonText.today + '</button>';
                 calendarNavHtml += '<button class=\"wc-next\">' + options.buttonText.nextWeek + '</button>';
-                calendarNavHtml += '<button class=\"wc-jump\">' + options.buttonText.jump + '</button>';
               calendarNavHtml += '</div>';
               calendarNavHtml += '<h1 class=\"wc-title\"></h1>';
             calendarNavHtml += '</div>';
@@ -681,13 +681,18 @@
                     return false;
                   });
 
+      		  $.datepicker.setDefaults($.datepicker.regional['fr']);
             $calendarContainer.find('.wc-nav .wc-jump')
               .button({
                 icons: {primary: 'ui-icon-calendar'}})
-              .click(function() {
-                    //self.today();
-                    return false;
-                  });
+              .datepicker({
+    				    onSelect: function(dateText, inst) {
+    					     self.element.weekCalendar("gotoDate", $(this).datepicker("getDate"));
+    				    },
+    				    changeMonth: true,
+    				    changeYear: true,
+    				    dateFormat: "dd/mm/yy"
+    			 });
 
             $calendarContainer.find('.wc-nav .wc-prev')
               .button({
