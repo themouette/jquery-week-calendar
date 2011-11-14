@@ -1,5 +1,4 @@
 
-
 .wc-container {
 	font-size: 14px;	
 	font-family: arial, helvetica;
@@ -13,6 +12,11 @@
 .wc-toolbar .wc-nav
 {
   float:left;
+}
+
+.wc-toolbar .wc-nav .wc-jump
+{
+  width:80px;height:14px
 }
 
 .wc-toolbar .wc-display{
