@@ -1771,23 +1771,24 @@
                 var $weekDayColumns = self.element.find('.wc-day-column-inner');
 
                 //trigger drop callback
-                options.eventDrop(newCalEvent, calEvent, $calEvent);
+                if(options.eventDrop(newCalEvent, calEvent, $calEvent)) {
 
-                var $newEvent = self._renderEvent(newCalEvent, self._findWeekDayForEvent(newCalEvent, $weekDayColumns));
-                $calEvent.hide();
-
-                $calEvent.data('preventClick', true);
-
-                var $weekDayOld = self._findWeekDayForEvent($calEvent.data('calEvent'), self.element.find('.wc-time-slots .wc-day-column-inner'));
-
-                if ($weekDayOld.data('startDate') != $weekDay.data('startDate')) {
-                  self._adjustOverlappingEvents($weekDayOld);
+                  var $newEvent = self._renderEvent(newCalEvent, self._findWeekDayForEvent(newCalEvent, $weekDayColumns));
+                  $calEvent.hide();
+  
+                  $calEvent.data('preventClick', true);
+  
+                  var $weekDayOld = self._findWeekDayForEvent($calEvent.data('calEvent'), self.element.find('.wc-time-slots .wc-day-column-inner'));
+  
+                  if ($weekDayOld.data('startDate') != $weekDay.data('startDate')) {
+                    self._adjustOverlappingEvents($weekDayOld);
+                  }
+                  self._adjustOverlappingEvents($weekDay);
+  
+                  setTimeout(function() {
+                    $calEvent.remove();
+                  }, 1000);
                 }
-                self._adjustOverlappingEvents($weekDay);
-
-                setTimeout(function() {
-                  $calEvent.remove();
-                }, 1000);
 
             }
           });
