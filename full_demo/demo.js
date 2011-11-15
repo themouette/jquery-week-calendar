@@ -75,9 +75,20 @@ $(document).ready(function() {
 
       },
       eventDrop : function(calEvent, $event) {
-        
+         if(window.confirm("Are you sure ?") ){
+		// Ajax query for example
+		return true;
+	 } else {
+            	$("#calendar").weekCalendar("removeEvent", calEvent.id);
+		$("#calendar").weekCalendar("updateEvent", $event);
+		return false;
+	 }
       },
       eventResize : function(calEvent, $event) {
+         if(window.confirm("Are you sure ?") )
+		//Ajax query	
+	 else
+		$("#calendar").weekCalendar("updateEvent", $event);
       },
       eventClick : function(calEvent, $event) {
 
