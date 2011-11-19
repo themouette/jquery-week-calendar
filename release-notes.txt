@@ -1,3 +1,6 @@
+2-0-dev-2011-11-20
+Nothing was done! fuck hell!
+
 2.0-dev-2011-02-18
 - bugfixes (min/max date, ajax fast switching, theme roller compatibility)
 - better code quality (passes google closure linter except on line lengths)
