@@ -101,6 +101,30 @@
 			   {"id":5, "start": new Date(year, month, day + 1, 14), "end": new Date(year, month, day + 1, 15),"title":"Product showcase"}
 			]
 		};
+
+         
+        // data set 3 : using event delete features
+	var eventData3 = {
+			options: {
+				allowEventDelete: true,
+				eventDelete: function(calEvent, element, dayFreeBusyManager, 
+                                                      calendar, clickEvent) {
+				    if ( confirm('You want to delete this event?') ) {
+					calendar.weekCalendar('removeEvent',calEvent.id);
+				    }
+				},
+				deletable: function(calEvent, element) {
+				    return calEvent.start > Date.today();
+				}
+			},
+			events : [
+			   {"id":1, "start": new Date(year, month, day, 12), "end": new Date(year, month, day, 13, 00),"title":"Lunch with Ashley"},
+			   {"id":2, "start": new Date(year, month, day, 14), "end": new Date(year, month, day, 14, 40),"title":"Team Picnic"},
+			   {"id":3, "start": new Date(year, month, day + 1, 18), "end": new Date(year, month, day + 1, 18, 40),"title":"Meet with Cathy"},
+			   {"id":4, "start": new Date(year, month, day - 1, 8), "end": new Date(year, month, day - 1, 9, 20),"title":"Coffee with Alyssa"},
+			   {"id":5, "start": new Date(year, month, day + 1, 14), "end": new Date(year, month, day + 1, 15),"title":"Product kickoff"}
+			]
+		};
 	   
 	$(document).ready(function() {
 
@@ -126,6 +150,8 @@
 					callback(eventData1);
 				} else if(dataSource === "2") {
 					callback(eventData2);
+				} else if(dataSource === "3") {
+					callback(eventData3);
 				} else {
 					callback([]);
 				}
@@ -145,6 +171,8 @@
 					$("#message").text("Displaying event data set 1 with timeslots per hour of 4 and timeslot height of 20px");
 				} else if(dataSource === "2") {
 					$("#message").text("Displaying event data set 2 with timeslots per hour of 3 and timeslot height of 30px");
+				} else if(dataSource === "3") {
+					$("#message").text("Displaying event data set 3 with allowEventDelete enabled. Events before today will not be deletable. A confirmation dialog is opened when you delete an event.");
 				} else {
 					$("#message").text("Displaying no events.");
 				}
@@ -168,6 +196,7 @@
 			<option value="">Select Event Data</option>
 			<option value="1">Event Data 1</option>
 			<option value="2">Event data 2</option>
+			<option value="3">Event data 3</option>
 		</select>
 	</div>
 	<div id='calendar'></div>

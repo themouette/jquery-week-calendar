@@ -63,11 +63,15 @@
         },
         switchDisplay: {},
         scrollToHourMillis: 500,
+	allowEventDelete: false,
         allowCalEventOverlap: false,
         overlapEventsSeparate: false,
         totalEventsWidthPercentInOneColumn : 100,
         readonly: false,
         allowEventCreation: true,
+        deletable: function(calEvent, element) {
+          return true;
+        },
         draggable: function(calEvent, element) {
           return true;
         },
@@ -99,6 +103,10 @@
         },
         eventMouseout: function(calEvent, $event) {
         },
+        eventDelete: function(calEvent, element, dayFreeBusyManager, 
+                                                      calendar, clickEvent) {
+            calendar.weekCalendar('removeEvent',calEvent.id);
+	},
         calendarBeforeLoad: function(calendar) {
         },
         calendarAfterLoad: function(calendar) {
@@ -591,7 +599,11 @@
           var $calEvent = $target.hasClass('wc-cal-event') ? $target : $target.parents('.wc-cal-event');
           if ($calEvent.length) {
             freeBusyManager = self.getFreeBusyManagerForEvent($calEvent.data('calEvent'));
-            options.eventClick($calEvent.data('calEvent'), $calEvent, freeBusyManager, self.element, event);
+	    if (options.allowEventDelete && $target.hasClass('wc-cal-event-delete')) {
+		options.eventDelete($calEvent.data('calEvent'), $calEvent, freeBusyManager, self.element, event);
+	    }else{
+		options.eventClick($calEvent.data('calEvent'), $calEvent, freeBusyManager, self.element, event);
+	    }
           }
         }).mouseover(function(event) {
           var $target = $(event.target);
@@ -1820,7 +1832,13 @@
         * Refresh the displayed details of a calEvent in the calendar
         */
       _refreshEventDetails: function(calEvent, $calEvent) {
-          $calEvent.find('.wc-time').html(this.options.eventHeader(calEvent, this.element));
+	  var suffix = '';
+	  if (!this.options.readonly &&
+		 this.options.allowEventDelete &&
+		 this.options.deletable(calEvent,$calEvent)) {
+	      suffix = '<div class="wc-cal-event-delete ui-icon ui-icon-close"></div>';
+	  }
+          $calEvent.find('.wc-time').html(this.options.eventHeader(calEvent, this.element) + suffix);
           $calEvent.find('.wc-title').html(this.options.eventBody(calEvent, this.element));
           $calEvent.data('calEvent', calEvent);
           this.options.eventRefresh(calEvent, $calEvent);

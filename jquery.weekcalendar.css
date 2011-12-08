@@ -220,6 +220,13 @@ table.wc-time-slots {
 }
 
 
+.wc-cal-event-delete {
+    float: right;
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+}
+
 .wc-cal-event.ui-resizable-resizing {
 	cursor: s-resize;
 }
