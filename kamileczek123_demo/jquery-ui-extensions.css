@@ -1,0 +1,31 @@
+/* autocomplete */
+
+.ui-autocomplete-loading {
+  background: white url('../img/autocomplete-anim-circle-16x16.gif') right center no-repeat;
+}
+
+.ui-autocomplete-input {
+  border: 1px solid #f746b1;
+  font-family: "Lucida Sans Unicode", "Lucida Grande", "Trebuchet MS", "Arial", "Helvetica", sans-serif;
+  font-size: 12px;
+  margin-top: 1px;
+}
+
+/* autocomplete menu item */
+.ui-autocomplete .ui-menu-item {
+  font-size: 12px;
+  font-family: "Lucida Sans Unicode", "Lucida Grande", "Trebuchet MS", Arial, Helvetica, sans-serif;
+  text-align: left;
+  margin-top: 1px;
+}
+
+/* dialog
+.ui-dialog-title {
+  color: #434343;
+  font-size: 12px;
+}
+.ui-button-text {
+  color: #434343;
+  font-size: 10px;
+}
+*/
