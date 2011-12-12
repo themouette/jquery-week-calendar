@@ -1773,7 +1773,7 @@
                 var $weekDayColumns = self.element.find('.wc-day-column-inner');
 
                 //trigger drop callback
-                options.eventDrop(newCalEvent, calEvent, $calEvent);
+                options.eventDrop(newCalEvent, $calEvent);
 
                 var $newEvent = self._renderEvent(newCalEvent, self._findWeekDayForEvent(newCalEvent, $weekDayColumns));
                 $calEvent.hide();
@@ -1818,7 +1818,7 @@
                 self._positionEvent($weekDay, $calEvent);
                 self._adjustOverlappingEvents($weekDay);
                 //trigger resize callback
-                options.eventResize(newCalEvent, calEvent, $calEvent);
+                options.eventResize(newCalEvent, $calEvent);
                 $calEvent.data('preventClick', true);
                 setTimeout(function() {
                   $calEvent.removeData('preventClick');
