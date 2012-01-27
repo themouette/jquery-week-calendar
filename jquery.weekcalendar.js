@@ -1298,10 +1298,10 @@
 
           //now update the calendar title
           if (this.options.title && this.options.title.length) {
-            var _date = this.options.date,
-                _start = self._cloneDate(self.element.data('startDate')),
-                _end = self._dateLastDayOfWeek(new Date(this._cloneDate(self.element.data('endDate')).getTime() - (MILLIS_IN_DAY))),
-                _title = this._getCalendarTitle();
+            var _date = this.options.date;
+            var _start = self._cloneDate(self.element.data('startDate'));
+            var _end = self._dateLastDayOfWeek(new Date(this._cloneDate(self.element.data('endDate')).getTime() - (MILLIS_IN_DAY)));
+            var _title = this._getCalendarTitle(_start, _end);
             _title = _title.split('%start%').join(self._formatDate(_start, options.dateFormat));
             _title = _title.split('%end%').join(self._formatDate(_end, options.dateFormat));
             _title = _title.split('%date%').join(self._formatDate(_date, options.dateFormat));
@@ -1313,9 +1313,9 @@
       /*
         * gets the calendar title options
         */
-      _getCalendarTitle: function() {
+      _getCalendarTitle: function(start, end) {
       if ($.isFunction(this.options.title)) {
-        return this.options.title(this.options.daysToShow);
+        return this.options.title(this.options.daysToShow, start, end);
       }
       return this.options.title;
       },
