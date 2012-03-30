@@ -1776,7 +1776,7 @@
                 options.eventDrop(newCalEvent, calEvent, $calEvent);
 
                 var $newEvent = self._renderEvent(newCalEvent, self._findWeekDayForEvent(newCalEvent, $weekDayColumns));
-                $calEvent.hide();
+                $calEvent.remove();
 
                 $calEvent.data('preventClick', true);
 
@@ -1814,11 +1814,11 @@
                 var newCalEvent = $.extend(true, {}, calEvent, {start: calEvent.start, end: newEnd});
                 self._adjustForEventCollisions($weekDay, $calEvent, newCalEvent, calEvent);
 
+                //trigger resize callback
+                options.eventResize(newCalEvent, calEvent, $calEvent);
                 self._refreshEventDetails(newCalEvent, $calEvent);
                 self._positionEvent($weekDay, $calEvent);
                 self._adjustOverlappingEvents($weekDay);
-                //trigger resize callback
-                options.eventResize(newCalEvent, calEvent, $calEvent);
                 $calEvent.data('preventClick', true);
                 setTimeout(function() {
                   $calEvent.removeData('preventClick');
