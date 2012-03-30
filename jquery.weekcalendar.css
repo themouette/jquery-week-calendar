@@ -1,5 +1,4 @@
 
-
 .wc-container {
 	font-size: 14px;	
 	font-family: arial, helvetica;
@@ -210,7 +209,7 @@ table.wc-time-slots {
   /* IE 5-7 */ filter: alpha(opacity=80);
   /* Netscape */ -moz-opacity: 0.8;
   /* Safari 1 */ -khtml-opacity: 0.8;
-	position: absolute;	
+	position: absolute!important;	
 	text-align: center;
 	overflow: hidden;
 	cursor: pointer;

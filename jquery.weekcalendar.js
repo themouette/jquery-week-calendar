@@ -81,6 +81,9 @@
         eventClick: function(calEvent, element, dayFreeBusyManager, 
                                                       calendar, clickEvent) {
         },
+        eventDblClick: function(calEvent, element, dayFreeBusyManager, 
+                                                      calendar, clickEvent) {
+        },
         eventRender: function(calEvent, element) {
           return element;
         },
@@ -624,7 +627,17 @@
             if ($target.data('sizing')) { return;}
             options.eventMouseout($target.data('calEvent'), $target, event);
           }
-        });
+        }).dblclick(function(event){
+		  var $target = $(event.target),freeBusyManager;
+          if ($target.data('preventClick')) {
+            return;
+          }
+          var $calEvent = $target.hasClass('wc-cal-event') ? $target : $target.parents('.wc-cal-event');
+          if ($calEvent.length) {
+            freeBusyManager = self.getFreeBusyManagerForEvent($calEvent.data('calEvent'));
+            options.eventDblClick($calEvent.data('calEvent'), $calEvent, freeBusyManager, self.element, event);
+          }
+		});
       },
 
       /*
