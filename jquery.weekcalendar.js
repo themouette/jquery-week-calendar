@@ -1814,11 +1814,11 @@
                 var newCalEvent = $.extend(true, {}, calEvent, {start: calEvent.start, end: newEnd});
                 self._adjustForEventCollisions($weekDay, $calEvent, newCalEvent, calEvent);
 
+                //trigger resize callback
+                options.eventResize(newCalEvent, calEvent, $calEvent);
                 self._refreshEventDetails(newCalEvent, $calEvent);
                 self._positionEvent($weekDay, $calEvent);
                 self._adjustOverlappingEvents($weekDay);
-                //trigger resize callback
-                options.eventResize(newCalEvent, calEvent, $calEvent);
                 $calEvent.data('preventClick', true);
                 setTimeout(function() {
                   $calEvent.removeData('preventClick');
