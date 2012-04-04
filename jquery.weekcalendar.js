@@ -615,6 +615,9 @@
           if ($target.hasClass('wc-cal-event')) {
             options.eventMouseover($target.data('calEvent'), $target, event);
           }
+          if ($target.hasClass('wc-time') || $target.hasClass('wc-title')) {
+            options.eventMouseover($target.parents('.wc-cal-event').data('calEvent'), $target, event);
+          }
         }).mouseout(function(event) {
           var $target = $(event.target);
           if (self._isDraggingOrResizing($target)) {
@@ -623,6 +626,10 @@
           if ($target.hasClass('wc-cal-event')) {
             if ($target.data('sizing')) { return;}
             options.eventMouseout($target.data('calEvent'), $target, event);
+          }
+          if ($target.hasClass('wc-time') || $target.hasClass('wc-title')) {
+            if ($target.data('sizing')) { return;}
+            options.eventMouseout($target.parents('.wc-cal-event').data('calEvent'), $target, event);
           }
         });
       },
