@@ -1320,10 +1320,10 @@
 
           //now update the calendar title
           if (this.options.title && this.options.title.length) {
-            var _date = this.options.date,
-                _start = self._cloneDate(self.element.data('startDate')),
-                _end = self._dateLastDayOfWeek(new Date(this._cloneDate(self.element.data('endDate')).getTime() - (MILLIS_IN_DAY))),
-                _title = this._getCalendarTitle();
+            var _date = this.options.date;
+            var _start = self._cloneDate(self.element.data('startDate'));
+            var _end = self._dateLastDayOfWeek(new Date(this._cloneDate(self.element.data('endDate')).getTime() - (MILLIS_IN_DAY)));
+            var _title = this._getCalendarTitle(_start, _end);
             _title = _title.split('%start%').join(self._formatDate(_start, options.dateFormat));
             _title = _title.split('%end%').join(self._formatDate(_end, options.dateFormat));
             _title = _title.split('%date%').join(self._formatDate(_date, options.dateFormat));
@@ -1335,9 +1335,9 @@
       /*
         * gets the calendar title options
         */
-      _getCalendarTitle: function() {
+      _getCalendarTitle: function(start, end) {
       if ($.isFunction(this.options.title)) {
-        return this.options.title(this.options.daysToShow);
+        return this.options.title(this.options.daysToShow, start, end);
       }
       return this.options.title;
       },
@@ -1530,53 +1530,47 @@
       /*
         * Find groups of overlapping events
         */
-      _groupOverlappingEventElements: function($weekDay) {
-          var $events = $weekDay.find('.wc-cal-event:visible');
-          var sortedEvents = $events.sort(function(a, b) {
-            return $(a).data('calEvent').start.getTime() - $(b).data('calEvent').start.getTime();
-          });
-
-          var lastEndTime = new Date(0, 0, 0);
-          var groups = [];
-          var curGroups = [];
-          var $curEvent;
-          $.each(sortedEvents, function() {
-            $curEvent = $(this);
-            //checks, if the current group list is not empty, if the overlapping is finished
-            if (curGroups.length > 0) {
-                if (lastEndTime.getTime() <= $curEvent.data('calEvent').start.getTime()) {
-                  //finishes the current group list by adding it to the resulting list of groups and cleans it
-
-                  groups.push(curGroups);
-                  curGroups = [];
-                }
-            }
-
-            //finds the first group to fill with the event
-            for (var groupIndex = 0; groupIndex < curGroups.length; groupIndex++) {
-                if (curGroups[groupIndex].length > 0) {
-                  //checks if the event starts after the end of the last event of the group
-                  if (curGroups[groupIndex][curGroups[groupIndex].length - 1].data('calEvent').end.getTime() <= $curEvent.data('calEvent').start.getTime()) {
-                      curGroups[groupIndex].push($curEvent);
-                      if (lastEndTime.getTime() < $curEvent.data('calEvent').end.getTime()) {
-                        lastEndTime = $curEvent.data('calEvent').end;
-                      }
-                      return;
-                  }
-                }
-            }
-            //if not found, creates a new group
-            curGroups.push([$curEvent]);
-            if (lastEndTime.getTime() < $curEvent.data('calEvent').end.getTime()) {
-                lastEndTime = $curEvent.data('calEvent').end;
-            }
-          });
-          //adds the last groups in result
-          if (curGroups.length > 0) {
-            groups.push(curGroups);
-          }
-          return groups;
-      },
+	_groupOverlappingEventElements: function($weekDay) {
+		var $events = $weekDay.find('.wc-cal-event:visible');
+		var complexEvents = jQuery.map($events, function (element, index) {
+			var event = $(element);
+			var calEvent = event.data('calEvent');
+			var calEventStart = calEvent.start;
+			var calEventEnd = calEvent.end;
+			var complexEvent = {
+				'event': event,
+				'calEvent': calEvent,
+				'startTime': calEventStart.getTime(),
+				'endTime': calEventEnd.getTime()
+			};
+			return complexEvent;
+		}).sort(function (a, b) {
+			var result = a.startTime - b.startTime;
+			if (result) {
+				return result;
+			}
+			return a.endTime - b.endTime;
+		});
+		var groups = new Array();
+		var currentGroup;
+		var lastEndTime = new Date(0, 0, 0);
+		var complexEvent;
+		var event;
+		jQuery.each(complexEvents, function (index, element) {
+			complexEvent = element;
+			event = complexEvent.event;
+			var calEvent = complexEvent.calEvent;
+			var startTime = complexEvent.startTime;
+			var endTime = complexEvent.endTime;
+			if (lastEndTime < startTime) {
+				currentGroup = new Array();
+				groups.push(currentGroup);
+			}
+			currentGroup.push(event);
+			lastEndTime = Math.max(lastEndTime, endTime);
+		});
+		return groups;
+	},
 
 
       /*
