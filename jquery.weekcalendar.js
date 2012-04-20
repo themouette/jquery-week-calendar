@@ -590,48 +590,70 @@
       _setupEventDelegation: function() {
         var self = this;
         var options = this.options;
+
         this.element.click(function(event) {
           var $target = $(event.target),
               freeBusyManager;
+
+          // click is disabled
           if ($target.data('preventClick')) {
             return;
           }
-          var $calEvent = $target.hasClass('wc-cal-event') ? $target : $target.parents('.wc-cal-event');
-          if ($calEvent.length) {
-            freeBusyManager = self.getFreeBusyManagerForEvent($calEvent.data('calEvent'));
-	    if (options.allowEventDelete && $target.hasClass('wc-cal-event-delete')) {
-		options.eventDelete($calEvent.data('calEvent'), $calEvent, freeBusyManager, self.element, event);
-	    }else{
-		options.eventClick($calEvent.data('calEvent'), $calEvent, freeBusyManager, self.element, event);
-	    }
+
+          var $calEvent = $target.hasClass('wc-cal-event') ?
+            $target :
+            $target.parents('.wc-cal-event');
+          if (!$calEvent.length || !$calEvent.data('calEvent')) {
+            return;
+          }
+
+          freeBusyManager = self.getFreeBusyManagerForEvent($calEvent.data('calEvent'));
+
+          if (options.allowEventDelete && $target.hasClass('wc-cal-event-delete')) {
+            options.eventDelete($calEvent.data('calEvent'), $calEvent, freeBusyManager, self.element, event);
+          } else {
+            options.eventClick($calEvent.data('calEvent'), $calEvent, freeBusyManager, self.element, event);
           }
         }).mouseover(function(event) {
           var $target = $(event.target);
+          var $calEvent = $target.hasClass('wc-cal-event') ?
+            $target :
+            $target.parents('.wc-cal-event');
 
-          if (self._isDraggingOrResizing($target)) {
+          if (!$calEvent.length || !$calEvent.data('calEvent')) {
             return;
           }
 
-          if ($target.hasClass('wc-cal-event')) {
-            options.eventMouseover($target.data('calEvent'), $target, event);
+          if (self._isDraggingOrResizing($calEvent)) {
+            return;
           }
+
+          options.eventMouseover($calEvent.data('calEvent'), $calEvent, event);
         }).mouseout(function(event) {
           var $target = $(event.target);
-          if (self._isDraggingOrResizing($target)) {
+          var $calEvent = $target.hasClass('wc-cal-event') ?
+            $target :
+            $target.parents('.wc-cal-event');
+
+          if (!$calEvent.length || !$calEvent.data('calEvent')) {
             return;
           }
-          if ($target.hasClass('wc-cal-event')) {
-            if ($target.data('sizing')) { return;}
-            options.eventMouseout($target.data('calEvent'), $target, event);
+
+          if (self._isDraggingOrResizing($calEvent)) {
+            return;
           }
+
+          options.eventMouseout($calEvent.data('calEvent'), $calEvent, event);
         });
       },
 
-      /*
-        * check if a ui draggable or resizable is currently being dragged or resized
-        */
+      /**
+       * check if a ui draggable or resizable is currently being dragged or
+       * resized.
+       */
       _isDraggingOrResizing: function($target) {
-        return $target.hasClass('ui-draggable-dragging') || $target.hasClass('ui-resizable-resizing');
+        return $target.hasClass('ui-draggable-dragging') ||
+               $target.hasClass('ui-resizable-resizing');
       },
 
       /*
@@ -1814,11 +1836,11 @@
                 var newCalEvent = $.extend(true, {}, calEvent, {start: calEvent.start, end: newEnd});
                 self._adjustForEventCollisions($weekDay, $calEvent, newCalEvent, calEvent);
 
+                //trigger resize callback
+                options.eventResize(newCalEvent, calEvent, $calEvent);
                 self._refreshEventDetails(newCalEvent, $calEvent);
                 self._positionEvent($weekDay, $calEvent);
                 self._adjustOverlappingEvents($weekDay);
-                //trigger resize callback
-                options.eventResize(newCalEvent, calEvent, $calEvent);
                 $calEvent.data('preventClick', true);
                 setTimeout(function() {
                   $calEvent.removeData('preventClick');
@@ -2488,7 +2510,7 @@
 
             var $weekdays = self._findWeekDaysForFreeBusy(_freeBusy, $freeBusyPlaceHoders);
             //if freebusy has a placeholder
-            if ($weekdays.length) {
+            if ($weekdays && $weekdays.length) {
               $weekdays.each(function(index, day) {
                 var manager = $(day).data('wcFreeBusyManager');
                 manager.insertFreeBusy(_freeBusy);
