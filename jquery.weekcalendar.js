@@ -1327,11 +1327,11 @@
                 date_format = options.dateFormat;
 
             // replace the placeholders contained in the title
-            title = _title.replace('%start%', self._formatDate(start, date_format));
-            title = _title.replace('%end%', self._formatDate(end, date_format));
-            title = _title.replace('%date%', self._formatDate(date, date_format));
+            title = title.replace('%start%', self._formatDate(start, date_format));
+            title = title.replace('%end%', self._formatDate(end, date_format));
+            title = title.replace('%date%', self._formatDate(date, date_format));
 
-            $('.wc-toolbar .wc-title', self.element).html(_title);
+            $('.wc-toolbar .wc-title', self.element).html(title);
           }
           //self._clearFreeBusys();
       },
