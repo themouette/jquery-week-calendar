@@ -1538,41 +1538,38 @@
 		_groupOverlappingEventElements: function($weekDay) {
 			var $events = $weekDay.find('.wc-cal-event:visible');
 			var complexEvents = jQuery.map($events, function (element, index) {
-				var event = $(element);
-				var calEvent = event.data('calEvent');
-				var calEventStart = calEvent.start;
-				var calEventEnd = calEvent.end;
+				var $event = $(element);
+				var position = $event.position();
+				var height = $event.height();
+				var calEvent = $event.data('calEvent');
 				var complexEvent = {
-					'event': event,
+					'event': $event,
 					'calEvent': calEvent,
-					'startTime': calEventStart.getTime(),
-					'endTime': calEventEnd.getTime()
+					'top': position.top,
+					'bottom': position.top + height
 				};
 				return complexEvent;
 			}).sort(function (a, b) {
-				var result = a.startTime - b.startTime;
+				var result = a.top - b.top;
 				if (result) {
 					return result;
 				}
-				return a.endTime - b.endTime;
+				return a.bottom - b.bottom;
 			});
 			var groups = new Array();
 			var currentGroup;
-			var lastEndTime = 0;
-			var complexEvent;
-			var event;
+			var lastBottom = -1;
 			jQuery.each(complexEvents, function (index, element) {
-				complexEvent = element;
-				event = complexEvent.event;
-				var calEvent = complexEvent.calEvent;
-				var startTime = complexEvent.startTime;
-				var endTime = complexEvent.endTime;
-				if (lastEndTime < startTime) {
+				var complexEvent = element;
+				var $event = complexEvent.event;
+				var top = complexEvent.top;
+				var bottom = complexEvent.bottom;
+				if (lastBottom < top) {
 					currentGroup = new Array();
 					groups.push(currentGroup);
 				}
-				currentGroup.push(event);
-				lastEndTime = Math.max(lastEndTime, endTime);
+				currentGroup.push($event);
+				lastBottom = Math.max(lastBottom, bottom);
 			});
 			return groups;
 		},
