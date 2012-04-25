@@ -1564,7 +1564,7 @@
 				var $event = complexEvent.event;
 				var top = complexEvent.top;
 				var bottom = complexEvent.bottom;
-				if (lastBottom < top) {
+				if (!currentGroup || lastBottom < top) {
 					currentGroup = new Array();
 					groups.push(currentGroup);
 				}
