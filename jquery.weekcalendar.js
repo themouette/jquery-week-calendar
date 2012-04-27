@@ -58,6 +58,7 @@
         buttons: true,
         buttonText: {
           today: 'today',
+          jump: 'jump',
           lastWeek: 'previous',
           nextWeek: 'next'
         },
@@ -697,6 +698,7 @@
               calendarNavHtml += '<div class=\"wc-display\"></div>';
               calendarNavHtml += '<div class=\"wc-nav\">';
                 calendarNavHtml += '<button class=\"wc-prev\">' + options.buttonText.lastWeek + '</button>';
+                calendarNavHtml += '<input type=\"text\" class=\"wc-jump\" value=\"' + options.buttonText.jump + '\"/>';
                 calendarNavHtml += '<button class=\"wc-today\">' + options.buttonText.today + '</button>';
                 calendarNavHtml += '<button class=\"wc-next\">' + options.buttonText.nextWeek + '</button>';
               calendarNavHtml += '</div>';
@@ -712,6 +714,19 @@
                     self.today();
                     return false;
                   });
+
+      		  $.datepicker.setDefaults($.datepicker.regional['fr']);
+            $calendarContainer.find('.wc-nav .wc-jump')
+              .button({
+                icons: {primary: 'ui-icon-calendar'}})
+              .datepicker({
+    				    onSelect: function(dateText, inst) {
+    					     self.element.weekCalendar("gotoDate", $(this).datepicker("getDate"));
+    				    },
+    				    changeMonth: true,
+    				    changeYear: true,
+    				    dateFormat: "dd/mm/yy"
+    			 });
 
             $calendarContainer.find('.wc-nav .wc-prev')
               .button({
@@ -1801,23 +1816,24 @@
                 var $weekDayColumns = self.element.find('.wc-day-column-inner');
 
                 //trigger drop callback
-                options.eventDrop(newCalEvent, calEvent, $calEvent);
+                if(options.eventDrop(newCalEvent, calEvent, $calEvent)) {
 
-                var $newEvent = self._renderEvent(newCalEvent, self._findWeekDayForEvent(newCalEvent, $weekDayColumns));
-                $calEvent.hide();
-
-                $calEvent.data('preventClick', true);
-
-                var $weekDayOld = self._findWeekDayForEvent($calEvent.data('calEvent'), self.element.find('.wc-time-slots .wc-day-column-inner'));
-
-                if ($weekDayOld.data('startDate') != $weekDay.data('startDate')) {
-                  self._adjustOverlappingEvents($weekDayOld);
+                  var $newEvent = self._renderEvent(newCalEvent, self._findWeekDayForEvent(newCalEvent, $weekDayColumns));
+                  $calEvent.hide();
+  
+                  $calEvent.data('preventClick', true);
+  
+                  var $weekDayOld = self._findWeekDayForEvent($calEvent.data('calEvent'), self.element.find('.wc-time-slots .wc-day-column-inner'));
+  
+                  if ($weekDayOld.data('startDate') != $weekDay.data('startDate')) {
+                    self._adjustOverlappingEvents($weekDayOld);
+                  }
+                  self._adjustOverlappingEvents($weekDay);
+  
+                  setTimeout(function() {
+                    $calEvent.remove();
+                  }, 1000);
                 }
-                self._adjustOverlappingEvents($weekDay);
-
-                setTimeout(function() {
-                  $calEvent.remove();
-                }, 1000);
 
             }
           });
