@@ -103,7 +103,7 @@
       },
       events : [
         {'id':1, 'start': new Date(year, month, day, 12), 'end': new Date(year, month, day, 13, 00), 'title': 'Lunch with Sarah', userId: [1, 2]},
-        {'id':2, 'start': new Date(year, month, day, 14), 'end': new Date(year, month, day, 14, 40), 'title': 'Team Meeting', userId: 0},
+        {'id':2, 'start': new Date(year, month, day, 14), 'end': new Date(year, month, day, 15, 00), 'title': 'Team Meeting', userId: [0, 1]},
         {'id':3, 'start': new Date(year, month, day+1, 18), 'end': new Date(year, month, day+1, 18, 40), 'title': 'Meet with Joe', userId: 1},
         {'id':4, 'start': new Date(year, month, day-1, 8), 'end': new Date(year, month, day-1, 9, 20), 'title': 'Coffee with Alison', userId: 1},
         {'id':5, 'start': new Date(year, month, day+1, 14), 'end': new Date(year, month, day+1, 15, 00), 'title': 'Product showcase', userId: 0}
@@ -116,11 +116,13 @@
       ]
     };
 
-    function updateMessage() {
+    function updateMessage(message) {
       var dataSource = $('#data_source').val();
 
       $('#message').fadeOut(function() {
-        if (dataSource === '1') {
+        if (message !== undefined) {
+          $('#message').text(message);
+        } else if (dataSource === '1') {
           $('#message').text('Displaying event data set 1 with timeslots per hour of 4 and timeslot height of 20px. Moreover, the calendar is free by default.');
         } else if(dataSource === '2') {
           $('#message').text('Displaying event data set 2 with timeslots per hour of 3 and timeslot height of 30px. Moreover, the calendar is busy by default.');
@@ -177,6 +179,12 @@
             free:false
           });
         },
+        eventClick: function(calEvent) {
+          updateMessage('You clicked on the event "' + calEvent.title +'".');
+        },
+        eventReadOnlyClick: function(calEvent, element) {
+          updateMessage('You just tried to create/update an event on a read-only user!');
+        },
         data: function(start, end, callback) {
           var dataSource = $('#data_source').val();
           if (dataSource === '1') {
@@ -193,6 +201,9 @@
               events: []
             });
           }
+        },
+        isUserReadOnly: function(user, index) {
+          return index === 0; // only "user 1" is readonly
         },
         users: ['user 1', 'user 2', 'long username', 'user 4'],
         showAsSeparateUser: true,

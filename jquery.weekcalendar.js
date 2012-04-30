@@ -83,6 +83,8 @@
         eventClick: function(calEvent, element, dayFreeBusyManager, 
                                                       calendar, clickEvent) {
         },
+        eventReadOnlyClick: function(calEvent, element) {
+        },
         eventRender: function(calEvent, element) {
           return element;
         },
@@ -184,7 +186,7 @@
          * @return {number|String|Array} the user id(s) to appened events for.
          */
         getEventUserId: function(calEvent, calendar) {
-          return calEvent.userId;
+          return $.isArray(calEvent.userId) ? calEvent.userId : [calEvent.userId];
         },
         /**
          * sets user id(s) to the calEvent
@@ -195,6 +197,18 @@
         setEventUserId: function(userId, calEvent, calendar) {
           calEvent.userId = userId;
           return calEvent;
+        },
+        /**
+         * Indicates if the current user is in readonly mode.
+         *
+         * @param {Object} user     The user to retrieve the name from.
+         * @param {number} index    The user index from user list.
+         * @param {jQuery} calendar The calendar object associated to the user.
+         *
+         * @return {boolean} The result.
+         */
+        isUserReadOnly: function(user, index, calendar) {
+          return false;
         },
         /* freeBusy options */
         /**
@@ -595,7 +609,8 @@
 
         this.element.click(function(event) {
           var $target = $(event.target),
-              freeBusyManager;
+              freeBusyManager,
+              calEvent;
 
           // click is disabled
           if ($target.data('preventClick')) {
@@ -609,12 +624,24 @@
             return;
           }
 
-          freeBusyManager = self.getFreeBusyManagerForEvent($calEvent.data('calEvent'));
+          calEvent = $calEvent.data('calEvent');
+
+          var $userColumn = $calEvent.parents('.wc-day-column-inner'),
+              userIndex = $userColumn.data('wcUserIndex'),
+              user = self.getUserForId($userColumn.data('wcUserId')),
+              userReadOnly = options.isUserReadOnly(user, userIndex, self.element);
+
+          if (userReadOnly) {
+            options.eventReadOnlyClick(calEvent, $calEvent);
+            return;
+          }
+
+          freeBusyManager = self.getFreeBusyManagerForEvent(calEvent);
 
           if (options.allowEventDelete && $target.hasClass('wc-cal-event-delete')) {
-            options.eventDelete($calEvent.data('calEvent'), $calEvent, freeBusyManager, self.element, event);
+            options.eventDelete(calEvent, $calEvent, freeBusyManager, self.element, event);
           } else {
-            options.eventClick($calEvent.data('calEvent'), $calEvent, freeBusyManager, self.element, event);
+            options.eventClick(calEvent, $calEvent, freeBusyManager, self.element, event);
           }
         }).mouseover(function(event) {
           var $target = $(event.target);
@@ -1130,8 +1157,18 @@
                   newCalEvent = self._setEventUserId(newCalEvent, self._getUserIdFromIndex(0));
                 }
 
-                var freeBusyManager = self.getFreeBusyManagerForEvent(newCalEvent);
+                // now, check if the current user accepts new events
+                var userIndex = $weekDay.data('wcUserIndex'),
+                    user = self.getUserForId($weekDay.data('wcUserId')),
+                    userReadOnly = options.isUserReadOnly(user, userIndex, self.element);
 
+                if (userReadOnly) {
+                  options.eventReadOnlyClick(newCalEvent, $newEvent);
+                  $newEvent.remove();
+                  return;
+                }
+
+                var freeBusyManager = self.getFreeBusyManagerForEvent(newCalEvent);
                 var $renderedCalEvent = self._renderEvent(newCalEvent, $weekDay);
 
                 if (!options.allowCalEventOverlap) {
@@ -1781,118 +1818,170 @@
         * Add draggable capabilities to an event
         */
       _addDraggableToCalEvent: function(calEvent, $calEvent) {
-          var options = this.options;
-          $calEvent.draggable({
-            handle: '.wc-time',
-            containment: 'div.wc-time-slots',
-            snap: '.wc-day-column-inner',
-            snapMode: 'inner',
-            snapTolerance: options.timeslotHeight - 1,
-            revert: 'invalid',
-            opacity: 0.5,
-            grid: [$calEvent.outerWidth() + 1, options.timeslotHeight],
-            start: function(event, ui) {
-                var $calEvent = ui.draggable;
-                options.eventDrag(calEvent, $calEvent);
-            }
-          });
+
+        // now, check if the user is readonly or not
+        var $userColumn = $calEvent.parents('.wc-day-column-inner'),
+            userIndex = $userColumn.data('wcUserIndex'),
+            user = this.getUserForId($userColumn.data('wcUserId')),
+            userReadOnly = this.options.isUserReadOnly(user, userIndex, this.element);
+
+        // do not setup the "droppable property" if the user is readonly
+        if (userReadOnly) {
+          return;
+        }
+
+        var options = this.options;
+        $calEvent.draggable({
+          handle: '.wc-time',
+          containment: 'div.wc-time-slots',
+          snap: '.wc-day-column-inner',
+          snapMode: 'inner',
+          snapTolerance: options.timeslotHeight - 1,
+          revert: 'invalid',
+          opacity: 0.5,
+          grid: [$calEvent.outerWidth() + 1, options.timeslotHeight],
+          start: function(event, ui) {
+            var $calEvent = ui.draggable;
+            options.eventDrag(calEvent, $calEvent);
+          }
+        });
       },
 
-      /*
-        * Add droppable capabilites to weekdays to allow dropping of calEvents only
-        */
+      /**
+       * Add droppable capabilites to weekdays to allow dropping of calEvents only
+       */
       _addDroppableToWeekDay: function($weekDay) {
-          var self = this;
-          var options = this.options;
-          $weekDay.droppable({
-            accept: '.wc-cal-event',
-            drop: function(event, ui) {
-                var $calEvent = ui.draggable;
-                var top = Math.round(parseInt(ui.position.top));
-                var eventDuration = self._getEventDurationFromPositionedEventElement($weekDay, $calEvent, top);
-                var calEvent = $calEvent.data('calEvent');
-                var newCalEvent = $.extend(true, {}, calEvent, {start: eventDuration.start, end: eventDuration.end});
-                var showAsSeparatedUser = options.showAsSeparateUsers && options.users && options.users.length;
-                if (showAsSeparatedUser) {
-                  // we may have dragged the event on column with a new user.
-                  // nice way to handle that is:
-                  //  - get the newly dragged on user
-                  //  - check if user is part of the event
-                  //  - if yes, nothing changes, if not, find the old owner to remove it and add new one
-                  var newUserId = $weekDay.data('wcUserId');
-                  var userIdList = self._getEventUserId(calEvent);
-                  var oldUserId = $(ui.draggable.parents('.wc-day-column-inner').get(0)).data('wcUserId');
-                  if (!$.isArray(userIdList)) {
-                    userIdList = [userIdList];
-                  }
-                  if ($.inArray(newUserId, userIdList) == -1) {
-                    // remove old user
-                    var _index = $.inArray(oldUserId, userIdList);
-                    userIdList.splice(_index, 1);
-                    // add new user ?
-                    if ($.inArray(newUserId, userIdList) == -1) {
-                      userIdList.push(newUserId);
-                    }
-                  }
-                  newCalEvent = self._setEventUserId(newCalEvent, ((userIdList.length == 1) ? userIdList[0] : userIdList));
+        var self = this;
+        var options = this.options;
+
+        // now, check if the user is readonly or not
+        var userIndex = $weekDay.data('wcUserIndex'),
+            user = self.getUserForId($weekDay.data('wcUserId')),
+            userReadOnly = options.isUserReadOnly(user, userIndex, self.element);
+
+        // do not setup the "droppable property" if the user is readonly
+        if (userReadOnly) {
+          return;
+        }
+
+        $weekDay.droppable({
+          accept: '.wc-cal-event',
+          drop: function(event, ui) {
+            var $calEvent = ui.draggable;
+            var top = Math.round(parseInt(ui.position.top));
+            var eventDuration = self._getEventDurationFromPositionedEventElement($weekDay, $calEvent, top);
+            var calEvent = $calEvent.data('calEvent');
+            var newCalEvent = $.extend(true, {}, calEvent, {start: eventDuration.start, end: eventDuration.end});
+            var showAsSeparatedUser = options.showAsSeparateUsers && options.users && options.users.length;
+
+            if (showAsSeparatedUser) {
+              // we may have dragged the event on column with a new user.
+              // nice way to handle that is:
+              //  - get the newly dragged on user
+              //  - check if user is part of the event
+              //  - if yes, nothing changes, if not, find the old owner to remove it and add new one
+              var newUserId = $weekDay.data('wcUserId');
+              var userIdList = self._getEventUserId(calEvent);
+              var oldUserId = $(ui.draggable.parents('.wc-day-column-inner').get(0)).data('wcUserId');
+              if (!$.isArray(userIdList)) {
+                userIdList = [userIdList];
+              }
+              if ($.inArray(newUserId, userIdList) == -1) {
+                // remove old user
+                var _index = $.inArray(oldUserId, userIdList);
+                userIdList.splice(_index, 1);
+                // add new user ?
+                if ($.inArray(newUserId, userIdList) == -1) {
+                  userIdList.push(newUserId);
                 }
-                self._adjustForEventCollisions($weekDay, $calEvent, newCalEvent, calEvent, true);
-                var $weekDayColumns = self.element.find('.wc-day-column-inner');
-
-                //trigger drop callback
-                options.eventDrop(newCalEvent, calEvent, $calEvent);
-
-                var $newEvent = self._renderEvent(newCalEvent, self._findWeekDayForEvent(newCalEvent, $weekDayColumns));
-                $calEvent.hide();
-
-                $calEvent.data('preventClick', true);
-
-                var $weekDayOld = self._findWeekDayForEvent($calEvent.data('calEvent'), self.element.find('.wc-time-slots .wc-day-column-inner'));
-
-                if ($weekDayOld.data('startDate') != $weekDay.data('startDate')) {
-                  self._adjustOverlappingEvents($weekDayOld);
-                }
-                self._adjustOverlappingEvents($weekDay);
-
-                setTimeout(function() {
-                  $calEvent.remove();
-                }, 1000);
-
+              }
+              newCalEvent = self._setEventUserId(newCalEvent, ((userIdList.length == 1) ? userIdList[0] : userIdList));
             }
-          });
+
+            self._adjustForEventCollisions($weekDay, $calEvent, newCalEvent, calEvent, true);
+            var $weekDayColumns = self.element.find('.wc-day-column-inner');
+
+            // trigger drop callback
+            options.eventDrop(newCalEvent, calEvent, $calEvent);
+
+            var $newEvent = self._renderEvent(newCalEvent, self._findWeekDayForEvent(newCalEvent, $weekDayColumns));
+            $calEvent.hide();
+
+            $calEvent.data('preventClick', true);
+
+            var $weekDayOld = self._findWeekDayForEvent($calEvent.data('calEvent'), self.element.find('.wc-time-slots .wc-day-column-inner'));
+
+            if ($weekDayOld.data('startDate') != $weekDay.data('startDate')) {
+              self._adjustOverlappingEvents($weekDayOld);
+            }
+            self._adjustOverlappingEvents($weekDay);
+
+            setTimeout(function() {
+              $calEvent.remove();
+            }, 1000);
+          }
+        });
       },
 
-      /*
-        * Add resizable capabilities to a calEvent
-        */
+      /**
+       * Add resizable capabilities to a calEvent
+       */
       _addResizableToCalEvent: function(calEvent, $calEvent, $weekDay) {
-          var self = this;
-          var options = this.options;
-          $calEvent.resizable({
-            grid: options.timeslotHeight,
-            containment: $weekDay,
-            handles: 's',
-            minHeight: options.timeslotHeight,
-            stop: function(event, ui) {
-                var $calEvent = ui.element;
-                var newEnd = new Date($calEvent.data('calEvent').start.getTime() + Math.max(1, Math.round(ui.size.height / options.timeslotHeight)) * options.millisPerTimeslot);
-                if (self._needDSTdayShift($calEvent.data('calEvent').start, newEnd))
-            newEnd = self._getDSTdayShift(newEnd, -1);
-                var newCalEvent = $.extend(true, {}, calEvent, {start: calEvent.start, end: newEnd});
-                self._adjustForEventCollisions($weekDay, $calEvent, newCalEvent, calEvent);
+        var self = this;
+        var options = this.options;
 
-                //trigger resize callback
-                options.eventResize(newCalEvent, calEvent, $calEvent);
-                self._refreshEventDetails(newCalEvent, $calEvent);
-                self._positionEvent($weekDay, $calEvent);
-                self._adjustOverlappingEvents($weekDay);
-                $calEvent.data('preventClick', true);
-                setTimeout(function() {
-                  $calEvent.removeData('preventClick');
-                }, 500);
+        // now, check if the user is readonly or not
+        var userIds = this._getEventUserId(calEvent),
+            readOnly = false,
+            userIndex, user;
+
+        for (var i = 0, max = userIds.length; i < max; i += 1) {
+          userIndex = this._getUserIndexFromId(userIds[i]);
+          user = this.getUserForId(userIds[i]);
+
+          // the event is not resizable only if all the linked user are
+          // readonly
+          readOnly = options.isUserReadOnly(user, userIndex, this.element);
+        }
+
+        // do not setup the "resizable property" if the event is readonly
+        if (readOnly) {
+          return;
+        }
+
+        $calEvent.resizable({
+          grid: options.timeslotHeight,
+          containment: $weekDay,
+          handles: 's',
+          minHeight: options.timeslotHeight,
+          stop: function(event, ui) {
+            var $calEvent = ui.element;
+            var newEnd = new Date($calEvent.data('calEvent').start.getTime() + Math.max(1, Math.round(ui.size.height / options.timeslotHeight)) * options.millisPerTimeslot);
+
+            if (self._needDSTdayShift($calEvent.data('calEvent').start, newEnd)) {
+              newEnd = self._getDSTdayShift(newEnd, -1);
             }
-          });
-          $('.ui-resizable-handle', $calEvent).text('=');
+
+            var newCalEvent = $.extend(true, {}, calEvent, {
+              start: calEvent.start, end: newEnd
+            });
+
+            self._adjustForEventCollisions($weekDay, $calEvent, newCalEvent, calEvent);
+
+            // trigger resize callback
+            options.eventResize(newCalEvent, calEvent, $calEvent);
+
+            self._refreshEventDetails(newCalEvent, $calEvent);
+            self._positionEvent($weekDay, $calEvent);
+            self._adjustOverlappingEvents($weekDay);
+
+            $calEvent.data('preventClick', true);
+            setTimeout(function() {
+              $calEvent.removeData('preventClick');
+            }, 500);
+          }
+        });
+        $('.ui-resizable-handle', $calEvent).text('=');
       },
 
       /*
@@ -2305,19 +2394,24 @@
           return 0;
       },
       /**
-        * return the user ids for given calEvent.
-        * default is calEvent.userId field.
-        */
+       * return the user ids for given calEvent.
+       * default is calEvent.userId field.
+       *
+       * @return {Array} The users ID list.
+       */
       _getEventUserId: function(calEvent) {
-          var self = this;
-          var options = this.options;
-          if (options.showAsSeparateUsers && options.users && options.users.length) {
-            if ($.isFunction(options.getEventUserId)) {
+        var self = this,
+            options = this.options;
+
+        if (options.showAsSeparateUsers && options.users && options.users.length) {
+          if ($.isFunction(options.getEventUserId)) {
             return options.getEventUserId(calEvent, self.element);
-            }
-            return calEvent.userId;
           }
-          return [];
+
+          return $.isArray(calEvent.userId) ? calEvent.userId : [calEvent.userId];
+        }
+
+        return [];
       },
       /**
         * sets the event user id on given calEvent
