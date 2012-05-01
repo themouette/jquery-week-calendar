@@ -1814,36 +1814,38 @@
           $calEvent.data('calEvent', newCalEvent);
       },
 
-      /*
-        * Add draggable capabilities to an event
-        */
+      /**
+       * Add draggable capabilities to an event
+       */
       _addDraggableToCalEvent: function(calEvent, $calEvent) {
+        var options = this.options, self = this;
 
-        // now, check if the user is readonly or not
-        var $userColumn = $calEvent.parents('.wc-day-column-inner'),
-            userIndex = $userColumn.data('wcUserIndex'),
-            user = this.getUserForId($userColumn.data('wcUserId')),
-            userReadOnly = this.options.isUserReadOnly(user, userIndex, this.element);
+        $calEvent.each(function() {
+          // now, check if the user is readonly or not
+          var $userColumn = $(this).parents('.wc-day-column-inner'),
+              userIndex = $userColumn.data('wcUserIndex'),
+              user = self.getUserForId($userColumn.data('wcUserId')),
+              userReadOnly = options.isUserReadOnly(user, userIndex, self.element);
 
-        // do not setup the "droppable property" if the user is readonly
-        if (userReadOnly) {
-          return;
-        }
-
-        var options = this.options;
-        $calEvent.draggable({
-          handle: '.wc-time',
-          containment: 'div.wc-time-slots',
-          snap: '.wc-day-column-inner',
-          snapMode: 'inner',
-          snapTolerance: options.timeslotHeight - 1,
-          revert: 'invalid',
-          opacity: 0.5,
-          grid: [$calEvent.outerWidth() + 1, options.timeslotHeight],
-          start: function(event, ui) {
-            var $calEvent = ui.draggable;
-            options.eventDrag(calEvent, $calEvent);
+          // do not setup the "draggable property" if the user is readonly
+          if (userReadOnly) {
+            return;
           }
+
+          $(this).draggable({
+            handle: '.wc-time',
+            containment: 'div.wc-time-slots',
+            snap: '.wc-day-column-inner',
+            snapMode: 'inner',
+            snapTolerance: options.timeslotHeight - 1,
+            revert: 'invalid',
+            opacity: 0.5,
+            grid: [$calEvent.outerWidth() + 1, options.timeslotHeight],
+            start: function(event, ui) {
+              var $calEvent = ui.draggable;
+              options.eventDrag(calEvent, $calEvent);
+            }
+          });
         });
       },
 
@@ -1924,80 +1926,83 @@
       },
 
       /**
-       * Add resizable capabilities to a calEvent
+       * Add resizable capabilities to a calEvent.
        */
       _addResizableToCalEvent: function(calEvent, $calEvent, $weekDay) {
         var self = this;
         var options = this.options;
 
-        // now, check if the user is readonly or not
-        var userIds = this._getEventUserId(calEvent),
-            readOnly = false,
-            userIndex, user;
+        $calEvent.each(function() {
+          // now, check if the user is readonly or not
+          var $userColumn = $(this).parents('.wc-day-column-inner'),
+              userIndex = $userColumn.data('wcUserIndex'),
+              user = self.getUserForId($userColumn.data('wcUserId')),
+              userReadOnly = options.isUserReadOnly(user, userIndex, self.element);
 
-        for (var i = 0, max = userIds.length; i < max; i += 1) {
-          userIndex = this._getUserIndexFromId(userIds[i]);
-          user = this.getUserForId(userIds[i]);
-
-          // the event is not resizable only if all the linked user are
-          // readonly
-          readOnly = options.isUserReadOnly(user, userIndex, this.element);
-        }
-
-        // do not setup the "resizable property" if the event is readonly
-        if (readOnly) {
-          return;
-        }
-
-        $calEvent.resizable({
-          grid: options.timeslotHeight,
-          containment: $weekDay,
-          handles: 's',
-          minHeight: options.timeslotHeight,
-          stop: function(event, ui) {
-            var $calEvent = ui.element;
-            var newEnd = new Date($calEvent.data('calEvent').start.getTime() + Math.max(1, Math.round(ui.size.height / options.timeslotHeight)) * options.millisPerTimeslot);
-
-            if (self._needDSTdayShift($calEvent.data('calEvent').start, newEnd)) {
-              newEnd = self._getDSTdayShift(newEnd, -1);
-            }
-
-            var newCalEvent = $.extend(true, {}, calEvent, {
-              start: calEvent.start, end: newEnd
-            });
-
-            self._adjustForEventCollisions($weekDay, $calEvent, newCalEvent, calEvent);
-
-            // trigger resize callback
-            options.eventResize(newCalEvent, calEvent, $calEvent);
-
-            self._refreshEventDetails(newCalEvent, $calEvent);
-            self._positionEvent($weekDay, $calEvent);
-            self._adjustOverlappingEvents($weekDay);
-
-            $calEvent.data('preventClick', true);
-            setTimeout(function() {
-              $calEvent.removeData('preventClick');
-            }, 500);
+          // do not setup the "resizable property" if the event is readonly
+          if (userReadOnly) {
+            return;
           }
+
+          $(this).resizable({
+            grid: options.timeslotHeight,
+            containment: $weekDay,
+            handles: 's',
+            minHeight: options.timeslotHeight,
+            stop: function(event, ui) {
+              var $calEvent = ui.element;
+              var newEnd = new Date(
+                $calEvent.data('calEvent').start.getTime() +
+                Math.max(
+                  1,
+                  Math.round(ui.size.height / options.timeslotHeight)
+                ) * options.millisPerTimeslot
+              );
+
+              if (self._needDSTdayShift($calEvent.data('calEvent').start, newEnd)) {
+                newEnd = self._getDSTdayShift(newEnd, -1);
+              }
+
+              var newCalEvent = $.extend(true, {}, calEvent, {
+                start: calEvent.start, end: newEnd
+              });
+
+              self._adjustForEventCollisions($weekDay, $calEvent, newCalEvent, calEvent);
+
+              // trigger resize callback
+              options.eventResize(newCalEvent, calEvent, $calEvent);
+
+              self._refreshEventDetails(newCalEvent, $calEvent);
+              self._positionEvent($weekDay, $calEvent);
+              self._adjustOverlappingEvents($weekDay);
+
+              $calEvent.data('preventClick', true);
+              setTimeout(function() {
+                $calEvent.removeData('preventClick');
+              }, 500);
+            }
+          });
+
+          $('.ui-resizable-handle', $(this)).text('=');
         });
-        $('.ui-resizable-handle', $calEvent).text('=');
       },
 
-      /*
-        * Refresh the displayed details of a calEvent in the calendar
-        */
+      /**
+       * Refresh the displayed details of a calEvent in the calendar
+       */
       _refreshEventDetails: function(calEvent, $calEvent) {
-	  var suffix = '';
-	  if (!this.options.readonly &&
-		 this.options.allowEventDelete &&
-		 this.options.deletable(calEvent,$calEvent)) {
-	      suffix = '<div class="wc-cal-event-delete ui-icon ui-icon-close"></div>';
-	  }
-          $calEvent.find('.wc-time').html(this.options.eventHeader(calEvent, this.element) + suffix);
-          $calEvent.find('.wc-title').html(this.options.eventBody(calEvent, this.element));
-          $calEvent.data('calEvent', calEvent);
-          this.options.eventRefresh(calEvent, $calEvent);
+        var suffix = '';
+
+        if (!this.options.readonly &&
+          this.options.allowEventDelete &&
+          this.options.deletable(calEvent,$calEvent)) {
+          suffix = '<div class="wc-cal-event-delete ui-icon ui-icon-close"></div>';
+        }
+
+        $calEvent.find('.wc-time').html(this.options.eventHeader(calEvent, this.element) + suffix);
+        $calEvent.find('.wc-title').html(this.options.eventBody(calEvent, this.element));
+        $calEvent.data('calEvent', calEvent);
+        this.options.eventRefresh(calEvent, $calEvent);
       },
 
       /*
