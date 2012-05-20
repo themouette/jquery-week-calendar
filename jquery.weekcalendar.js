@@ -1840,12 +1840,11 @@
                 self._adjustForEventCollisions($weekDay, $calEvent, newCalEvent, calEvent, true);
                 var $weekDayColumns = self.element.find('.wc-day-column-inner');
 
-                //trigger drop callback
-                options.eventDrop(newCalEvent, calEvent, $calEvent);
-
                 var $newEvent = self._renderEvent(newCalEvent, self._findWeekDayForEvent(newCalEvent, $weekDayColumns));
-                $calEvent.hide();
+                // trigger drop callback
+                options.eventDrop(newCalEvent, calEvent, $newEvent);
 
+                $calEvent.hide();
                 $calEvent.data('preventClick', true);
 
                 var $weekDayOld = self._findWeekDayForEvent($calEvent.data('calEvent'), self.element.find('.wc-time-slots .wc-day-column-inner'));
