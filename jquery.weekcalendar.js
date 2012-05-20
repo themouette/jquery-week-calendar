@@ -2070,7 +2070,10 @@
           // midnight on minDate
           minDate = new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate());
           if (date.getTime() < minDate.getTime()) {
-            this._trigger('reachedmindate', this.element, date);
+            this._trigger('reachedmindate', this.element, {
+              calendar: this.element,
+              date: date
+            });
           }
           date = this._cleanDate(Math.max(date.getTime(), minDate.getTime()));
         }
@@ -2088,7 +2091,10 @@
           // microsecond before midnight on maxDate
           maxDate = new Date(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate(), 23, 59, 59, 999);
           if (date.getTime() > maxDate.getTime()) {
-            this._trigger('reachedmaxdate', this.element, date);
+            this._trigger('reachedmaxdate', this.element, {
+              calendar: this.element,
+              date: date
+            });
           }
           date = this._cleanDate(Math.min(date.getTime(), maxDate.getTime()));
         }
