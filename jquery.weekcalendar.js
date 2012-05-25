@@ -108,7 +108,7 @@
         eventDelete: function(calEvent, element, dayFreeBusyManager, 
                                                       calendar, clickEvent) {
             calendar.weekCalendar('removeEvent',calEvent.id);
-	},
+  },
         calendarBeforeLoad: function(calendar) {
         },
         calendarAfterLoad: function(calendar) {
@@ -269,20 +269,20 @@
         jsonOptions: {},
         headerSeparator: '<br />',
         /**
-          * returns formatted header for day display
-          * @type {function(date,calendar)}
-          */
+         * returns formatted header for day display
+         * @type {function(date,calendar)}
+         */
         getHeaderDate: null,
         preventDragOnEventCreation: false,
         /**
-          * the event on which to bind calendar resize
-          * @type {string}
-          */
+         * the event on which to bind calendar resize
+         * @type {string}
+         */
         resizeEvent: 'resize.weekcalendar'
       },
 
       /***********************
-       * Initialise calendar *
+       * Initialize calendar *
        ***********************/
       _create: function() {
         var self = this;
@@ -305,22 +305,22 @@
       /********************
        * public functions *
        ********************/
-      /*
+      /**
        * Refresh the events for the currently displayed week.
        */
       refresh: function() {
-        //reload with existing week
+        // reload with existing week
         this._loadCalEvents(this.element.data('startDate'));
       },
 
-      /*
+      /**
        * Clear all events currently loaded into the calendar
        */
       clear: function() {
         this._clearCalendar();
       },
 
-      /*
+      /**
        * Go to this week
        */
       today: function() {
@@ -328,7 +328,7 @@
         this._loadCalEvents(new Date());
       },
 
-      /*
+      /**
        * Go to the previous week relative to the currently displayed week
        */
       prevWeek: function() {
@@ -338,9 +338,9 @@
         this._loadCalEvents(newDate);
       },
 
-      /*
-        * Go to the next week relative to the currently displayed week
-        */
+      /**
+       * Go to the next week relative to the currently displayed week
+       */
       nextWeek: function() {
           //add 8 days to be sure of being in prev week - allows for daylight savings or other anomolies
           var newDate = new Date(this.element.data('startDate').getTime() + MILLIS_IN_WEEK + MILLIS_IN_DAY);
@@ -348,25 +348,25 @@
           this._loadCalEvents(newDate);
       },
 
-      /*
-        * Reload the calendar to whatever week the date passed in falls on.
-        */
+      /**
+       * Reload the calendar to whatever week the date passed in falls on.
+       */
       gotoWeek: function(date) {
           this._clearCalendar();
           this._loadCalEvents(date);
       },
 
-      /*
-        * Reload the calendar to whatever week the date passed in falls on.
-        */
+      /**
+       * Reload the calendar to whatever week the date passed in falls on.
+       */
       gotoDate: function(date) {
           this._clearCalendar();
           this._loadCalEvents(date);
       },
 
       /**
-        * change the number of days to show
-        */
+       * change the number of days to show
+       */
       setDaysToShow: function(daysToShow) {
           var self = this;
           var hour = self._getCurrentScrollHour();
@@ -385,9 +385,9 @@
         }
       },
 
-      /*
-        * Remove an event based on it's id
-        */
+      /**
+       * Remove an event based on it's id
+       */
       removeEvent: function(eventId) {
 
           var self = this;
@@ -405,10 +405,10 @@
           });
       },
 
-      /*
-        * Removes any events that have been added but not yet saved (have no id).
-        * This is useful to call after adding a freshly saved new event.
-        */
+      /**
+       * Removes any events that have been added but not yet saved (have no id).
+       * This is useful to call after adding a freshly saved new event.
+       */
       removeUnsavedEvents: function() {
 
           var self = this;
@@ -423,20 +423,20 @@
           });
       },
 
-      /*
-        * update an event in the calendar. If the event exists it refreshes
-        * it's rendering. If it's a new event that does not exist in the calendar
-        * it will be added.
-        */
+      /**
+       * update an event in the calendar. If the event exists it refreshes
+       * it's rendering. If it's a new event that does not exist in the calendar
+       * it will be added.
+       */
       updateEvent: function(calEvent) {
           this._updateEventInCalendar(calEvent);
       },
 
-      /*
-        * Returns an array of timeslot start and end times based on
-        * the configured grid of the calendar. Returns in both date and
-        * formatted time based on the 'timeFormat' config option.
-        */
+      /**
+       * Returns an array of timeslot start and end times based on
+       * the configured grid of the calendar. Returns in both date and
+       * formatted time based on the 'timeFormat' config option.
+       */
       getTimeslotTimes: function(date) {
           var options = this.options;
           var firstHourDisplayed = options.businessHours.limitDisplay ? options.businessHours.start : 0;
@@ -516,8 +516,8 @@
       },
 
       /*********************
-        * private functions *
-        *********************/
+       * private functions *
+       *********************/
       _setOption: function(key, value) {
         var self = this;
         if (self.options[key] != value) {
@@ -585,10 +585,10 @@
         return width || /* default to 16 that is the average */ 16;
       },
 
-      /*
-        * configure calendar interaction events that are able to use event
-        * delegation for greater efficiency
-        */
+      /**
+       * configure calendar interaction events that are able to use event
+       * delegation for greater efficiency
+       */
       _setupEventDelegation: function() {
         var self = this;
         var options = this.options;
@@ -658,9 +658,9 @@
                $target.hasClass('ui-resizable-resizing');
       },
 
-      /*
-        * Render the main calendar layout
-        */
+      /**
+       * Render the main calendar layout
+       */
       _renderCalendar: function() {
         var $calendarContainer, $weekDayColumns;
         var self = this;
@@ -688,8 +688,8 @@
       },
 
       /**
-        * render the nav buttons on top of the calendar
-        */
+       * render the nav buttons on top of the calendar
+       */
       _renderCalendarButtons: function($calendarContainer) {
         var self = this, options = this.options;
         if (options.buttons) {
@@ -769,8 +769,8 @@
       },
 
       /**
-        * render the calendar header, including date and user header
-        */
+       * render the calendar header, including date and user header
+       */
       _renderCalendarHeader: function($calendarContainer) {
         var self = this, options = this.options,
             showAsSeparatedUser = options.showAsSeparateUsers && options.users && options.users.length,
@@ -877,8 +877,8 @@
       },
 
       /**
-        * render the timeslots separation
-        */
+       * render the timeslots separation
+       */
       _renderCalendarBodyTimeSlots: function($calendarTableTbody) {
         var options = this.options,
             renderRow, i, j,
@@ -919,8 +919,8 @@
       },
 
       /**
-        * render the odd even columns
-        */
+       * render the odd even columns
+       */
       _renderCalendarBodyOddEven: function($calendarTableTbody) {
         if (this.options.displayOddEven) {
           var options = this.options,
@@ -959,8 +959,8 @@
       },
 
       /**
-        * render the freebusy placeholders
-        */
+       * render the freebusy placeholders
+       */
       _renderCalendarBodyFreeBusy: function($calendarTableTbody) {
         if (this.options.displayFreeBusys) {
           var self = this, options = this.options,
@@ -1000,8 +1000,8 @@
       },
 
       /**
-        * render the calendar body for event placeholders
-        */
+       * render the calendar body for event placeholders
+       */
       _renderCalendarBodyEvents: function($calendarTableTbody) {
         var self = this, options = this.options,
             renderRow,
@@ -1062,9 +1062,9 @@
         $(renderRow).appendTo($calendarTableTbody);
       },
 
-      /*
-        * setup mouse events for capturing new events
-        */
+      /**
+       * setup mouse events for capturing new events
+       */
       _setupEventCreationForWeekDay: function($weekDay) {
           var self = this;
           var options = this.options;
@@ -1146,19 +1146,19 @@
                   'createdFromSingleClick': createdFromSingleClick,
                   'calendar': self.element
                 });
-  							if (proceed) {
-									options.eventNew(newCalEvent, $renderedCalEvent, freeBusyManager, self.element, event);
-								}
-								else {
-									$($renderedCalEvent).remove();
-								}
+                if (proceed) {
+                  options.eventNew(newCalEvent, $renderedCalEvent, freeBusyManager, self.element, event);
+                }
+                else {
+                  $($renderedCalEvent).remove();
+                }
             }
           });
       },
 
-      /*
-        * load calendar events for the week based on the date provided
-        */
+      /**
+       * load calendar events for the week based on the date provided
+       */
       _loadCalEvents: function(dateWithinWeek) {
 
           var date, weekStartDate, weekEndDate, $weekDayColumns;
@@ -1281,9 +1281,9 @@
         );
       },
 
-      /*
-        * update the display of each day column header based on the calendar week
-        */
+      /**
+       * update the display of each day column header based on the calendar week
+       */
       _updateDayColumnHeader: function($weekDayColumns) {
           var self = this;
           var options = this.options;
@@ -1484,10 +1484,10 @@
         !nbRenderedEvents && options.noEvents();
       },
 
-      /*
-        * Render a specific event into the day provided. Assumes correct
-        * day for calEvent date
-        */
+      /**
+       * Render a specific event into the day provided. Assumes correct
+       * day for calEvent date
+       */
       _renderEvent: function(calEvent, $weekDay) {
           var self = this;
           var options = this.options;
@@ -1573,9 +1573,9 @@
       },
 
 
-      /*
-        * Find groups of overlapping events
-        */
+      /**
+       * Find groups of overlapping events
+       */
       _groupOverlappingEventElements: function($weekDay) {
           var $events = $weekDay.find('.wc-cal-event:visible');
           var sortedEvents = $events.sort(function(a, b) {
@@ -1625,9 +1625,9 @@
       },
 
 
-      /*
-        * find the weekday in the current calendar that the calEvent falls within
-        */
+      /**
+       * find the weekday in the current calendar that the calEvent falls within
+       */
       _findWeekDayForEvent: function(calEvent, $weekDayColumns) {
 
           var $weekDay,
@@ -1656,9 +1656,9 @@
           return $weekDay;
       },
 
-      /*
-        * update the events rendering in the calendar. Add if does not yet exist.
-        */
+      /**
+       * update the events rendering in the calendar. Add if does not yet exist.
+       */
       _updateEventInCalendar: function(calEvent) {
           var self = this;
           self._cleanEvent(calEvent);
@@ -1685,9 +1685,9 @@
           }
       },
 
-      /*
-        * Position the event element within the weekday based on it's start / end dates.
-        */
+      /**
+       * Position the event element within the weekday based on it's start / end dates.
+       */
       _positionEvent: function($weekDay, $calEvent) {
           var options = this.options;
           var calEvent = $calEvent.data('calEvent');
@@ -1701,11 +1701,11 @@
       $calEvent.css({top: pxTop, height: pxHeight || (pxPerMillis * 3600000 / options.timeslotsPerHour)});
       },
 
-      /*
-        * Determine the actual start and end times of a calevent based on it's
-        * relative position within the weekday column and the starting hour of the
-        * displayed calendar.
-        */
+      /**
+       * Determine the actual start and end times of a calevent based on it's
+       * relative position within the weekday column and the starting hour of
+       * the displayed calendar.
+       */
       _getEventDurationFromPositionedEventElement: function($weekDay, $calEvent, top) {
           var options = this.options;
           var startOffsetMillis = options.businessHours.limitDisplay ? options.businessHours.start * 3600000 : 0;
@@ -1714,12 +1714,13 @@
           return {start: this._getDSTdayShift(start, -1), end: this._getDSTdayShift(end, -1)};
       },
 
-      /*
-        * If the calendar does not allow event overlap, adjust the start or end date if necessary to
-        * avoid overlapping of events. Typically, shortens the resized / dropped event to it's max possible
-        * duration  based on the overlap. If no satisfactory adjustment can be made, the event is reverted to
-        * it's original location.
-        */
+      /**
+       * If the calendar does not allow event overlap, adjust the start or end
+       * date if necessary to avoid overlapping of events. Typically, shortens
+       * the resized / dropped event to it's max possible duration  based on the
+       * overlap. If no satisfactory adjustment can be made, the event is
+       * reverted to it's original location.
+       */
       _adjustForEventCollisions: function($weekDay, $calEvent, newCalEvent, oldCalEvent, maintainEventDuration) {
           var options = this.options;
 
@@ -1778,9 +1779,9 @@
           $calEvent.data('calEvent', newCalEvent);
       },
 
-      /*
-        * Add draggable capabilities to an event
-        */
+      /**
+       * Add draggable capabilities to an event
+       */
       _addDraggableToCalEvent: function(calEvent, $calEvent) {
           var options = this.options;
           $calEvent.draggable({
@@ -1799,9 +1800,9 @@
           });
       },
 
-      /*
-        * Add droppable capabilites to weekdays to allow dropping of calEvents only
-        */
+      /**
+       * Add droppable capabilites to weekdays to allow dropping of calEvents only
+       */
       _addDroppableToWeekDay: function($weekDay) {
           var self = this;
           var options = this.options;
@@ -1863,9 +1864,9 @@
           });
       },
 
-      /*
-        * Add resizable capabilities to a calEvent
-        */
+      /**
+       * Add resizable capabilities to a calEvent
+       */
       _addResizableToCalEvent: function(calEvent, $calEvent, $weekDay) {
           var self = this;
           var options = this.options;
@@ -1896,33 +1897,33 @@
           $('.ui-resizable-handle', $calEvent).text('=');
       },
 
-      /*
-        * Refresh the displayed details of a calEvent in the calendar
-        */
+      /**
+       * Refresh the displayed details of a calEvent in the calendar
+       */
       _refreshEventDetails: function(calEvent, $calEvent) {
-	  var suffix = '';
-	  if (!this.options.readonly &&
-		 this.options.allowEventDelete &&
-		 this.options.deletable(calEvent,$calEvent)) {
-	      suffix = '<div class="wc-cal-event-delete ui-icon ui-icon-close"></div>';
-	  }
+    var suffix = '';
+    if (!this.options.readonly &&
+     this.options.allowEventDelete &&
+     this.options.deletable(calEvent,$calEvent)) {
+        suffix = '<div class="wc-cal-event-delete ui-icon ui-icon-close"></div>';
+    }
           $calEvent.find('.wc-time').html(this.options.eventHeader(calEvent, this.element) + suffix);
           $calEvent.find('.wc-title').html(this.options.eventBody(calEvent, this.element));
           $calEvent.data('calEvent', calEvent);
           this.options.eventRefresh(calEvent, $calEvent);
       },
 
-      /*
-        * Clear all cal events from the calendar
-        */
+      /**
+       * Clear all cal events from the calendar
+       */
       _clearCalendar: function() {
           this.element.find('.wc-day-column-inner div').remove();
           this._clearFreeBusys();
       },
 
-      /*
-        * Scroll the calendar to a specific hour
-        */
+      /**
+       * Scroll the calendar to a specific hour
+       */
       _scrollToHour: function(hour, animate) {
           var self = this;
           var options = this.options;
@@ -1952,9 +1953,9 @@
           });
       },
 
-      /*
-        * find the hour (12 hour day) for a given hour index
-        */
+      /**
+       * find the hour (12 hour day) for a given hour index
+       */
       _hourForIndex: function(index) {
           if (index === 0) { //midnight
             return 12;
@@ -1987,7 +1988,7 @@
           return today.getTime() === clonedDate.getTime();
       },
 
-      /*
+      /**
        * Clean events to ensure correct format
        */
       _cleanEvents: function(events) {
@@ -1998,7 +1999,7 @@
           return events;
       },
 
-      /*
+      /**
        * Clean specific event
        */
       _cleanEvent: function(event) {
@@ -2012,7 +2013,7 @@
           }
       },
 
-      /*
+      /**
        * Disable text selection of the elements in different browsers
        */
       _disableTextSelect: function($elements) {
@@ -2031,8 +2032,8 @@
           });
       },
 
-      /*
-       * returns the date on the first millisecond of the week
+      /**
+       * returns the date on the first millisecond of the week.
        */
       _dateFirstDayOfWeek: function(date) {
         var self = this;
@@ -2043,8 +2044,8 @@
         return adjustedDate;
       },
 
-      /*
-       * returns the date on the first millisecond of the last day of the week
+      /**
+       * Returns the date on the first millisecond of the last day of the week.
        */
       _dateLastDayOfWeek: function(date) {
         var self = this;
@@ -2057,8 +2058,7 @@
       },
 
       /**
-       * fix the date if it is not within given options
-       * minDate and maxDate
+       * Fix the date if it is not within given options minDate and maxDate.
        */
       _fixMinMaxDate: function(date) {
         var minDate, maxDate;
@@ -2096,9 +2096,9 @@
         return date;
       },
 
-      /*
-        * gets the index of the current day adjusted based on options
-        */
+      /**
+       * gets the index of the current day adjusted based on options
+       */
       _getAdjustedDayIndex: function(date) {
           if (!this._startOnFirstDayOfWeek()) {
             return 0;
@@ -2118,9 +2118,9 @@
         return this.options.firstDayOfWeek;
       },
 
-      /*
-        * returns the date on the last millisecond of the week
-        */
+      /**
+       * returns the date on the last millisecond of the week
+       */
       _dateLastMilliOfWeek: function(date) {
           var lastDayOfWeek = this._dateLastDayOfWeek(date);
           lastDayOfWeek = this._cloneDate(lastDayOfWeek);
@@ -2129,10 +2129,10 @@
 
       },
 
-      /*
-        * Clear the time components of a date leaving the date
-        * of the first milli of day
-        */
+      /**
+       * Clear the time components of a date leaving the date
+       * of the first milli of day
+       */
       _clearTime: function(d) {
           d.setHours(0);
           d.setMinutes(0);
@@ -2141,9 +2141,9 @@
           return d;
       },
 
-      /*
-        * add specific number of days to date
-        */
+      /**
+       * add specific number of days to date
+       */
       _addDays: function(d, n, keepTime) {
           d.setDate(d.getDate() + n);
           if (keepTime) {
@@ -2152,9 +2152,9 @@
           return this._clearTime(d);
       },
 
-      /*
-        * Rotate an array by specified number of places.
-        */
+      /**
+       * Rotate an array by specified number of places.
+       */
       _rotate: function(a /*array*/, p /* integer, positive integer rotate to the right, negative to the left... */) {
           for (var l = a.length, p = (Math.abs(p) >= l && (p %= l), p < 0 && (p += l), p), i, x; p; p = (Math.ceil(l / p) - 1) * p - l + (l = p)) {
             for (i = l; i > p; x = a[--i], a[i] = a[i - p], a[i - p] = x) {}
@@ -2194,10 +2194,10 @@
           return d;
       },
 
-      /*
-        * date formatting is adapted from
-        * http://jacwright.com/projects/javascript/date_format
-        */
+      /**
+       * date formatting is adapted from
+       * http://jacwright.com/projects/javascript/date_format
+       */
       _formatDate: function(date, format) {
         var returnStr = '';
         for (var i = 0; i < format.length; i++) {
@@ -2268,8 +2268,8 @@
       },
 
       /**
-        * return the user name for header
-        */
+       * return the user name for header
+       */
       _getUserName: function(index) {
           var self = this;
           var options = this.options;
@@ -2282,8 +2282,8 @@
           }
       },
       /**
-        * return the user id for given index
-        */
+       * return the user id for given index
+       */
       _getUserIdFromIndex: function(index) {
           var self = this;
           var options = this.options;
@@ -2293,8 +2293,8 @@
           return index;
       },
       /**
-        * returns the associated user index for given ID
-        */
+       * returns the associated user index for given ID
+       */
       _getUserIndexFromId: function(id) {
           var self = this;
           var options = this.options;
@@ -2306,9 +2306,9 @@
           return 0;
       },
       /**
-        * return the user ids for given calEvent.
-        * default is calEvent.userId field.
-        */
+       * return the user ids for given calEvent.
+       * default is calEvent.userId field.
+       */
       _getEventUserId: function(calEvent) {
           var self = this;
           var options = this.options;
@@ -2321,9 +2321,9 @@
           return [];
       },
       /**
-        * sets the event user id on given calEvent
-        * default is calEvent.userId field.
-        */
+       * sets the event user id on given calEvent
+       * default is calEvent.userId field.
+       */
       _setEventUserId: function(calEvent, userId) {
           var self = this;
           var options = this.options;
@@ -2334,9 +2334,9 @@
           return calEvent;
       },
       /**
-        * return the user ids for given freeBusy.
-        * default is freeBusy.userId field.
-        */
+       * return the user ids for given freeBusy.
+       * default is freeBusy.userId field.
+       */
       _getFreeBusyUserId: function(freeBusy) {
         var self = this;
         var options = this.options;
@@ -2349,8 +2349,8 @@
       /* FREEBUSY MANAGEMENT */
 
       /**
-        * ckean the free busy managers and remove all the freeBusy
-        */
+       * ckean the free busy managers and remove all the freeBusy
+       */
       _clearFreeBusys: function() {
         if (this.options.displayFreeBusys) {
           var self = this,
@@ -2367,8 +2367,8 @@
         }
       },
       /**
-        * retrieve placeholders for given freebusy
-        */
+       * retrieve placeholders for given freebusy
+       */
       _findWeekDaysForFreeBusy: function(freeBusy, $weekDays) {
         var $returnWeekDays,
             options = this.options,
@@ -2396,8 +2396,8 @@
       },
 
       /**
-        * used to render all freeBusys
-        */
+       * used to render all freeBusys
+       */
       _renderFreeBusys: function(freeBusys) {
         if (this.options.displayFreeBusys) {
           var self = this,
@@ -2429,8 +2429,8 @@
         }
       },
       /**
-        * refresh freebusys for given placeholders
-        */
+       * refresh freebusys for given placeholders
+       */
       _refreshFreeBusys: function($freeBusyPlaceholders) {
         if (this.options.displayFreeBusys && $freeBusyPlaceholders) {
           var self = this,
@@ -2452,8 +2452,8 @@
         }
       },
       /**
-        * render a freebusy item on dedicated placeholders
-        */
+       * render a freebusy item on dedicated placeholders
+       */
       _renderFreeBusy: function(freeBusy, $freeBusyPlaceholder) {
         if (this.options.displayFreeBusys) {
           var self = this,
@@ -2469,9 +2469,9 @@
           }
         }
       },
-      /*
-        * Position the freebusy element within the weekday based on it's start / end dates.
-        */
+      /**
+       * Position the freebusy element within the weekday based on it's start / end dates.
+       */
       _positionFreeBusy: function($placeholder, $freeBusy) {
           var options = this.options;
           var freeBusy = $freeBusy.data('wcFreeBusy');
@@ -2483,9 +2483,9 @@
           var pxHeight = pxPerMillis * eventMillis;
           $freeBusy.css({top: pxTop, height: pxHeight});
       },
-      /*
-        * Clean freebusys to ensure correct format
-        */
+      /**
+       * Clean freebusys to ensure correct format
+       */
       _cleanFreeBusys: function(freebusys) {
           var self = this,
               freeBusyToReturn = [];
@@ -2498,9 +2498,9 @@
           return freeBusyToReturn;
       },
 
-      /*
-        * Clean specific freebusy
-        */
+      /**
+       * Clean specific freebusy
+       */
       _cleanFreeBusy: function(freebusy) {
           if (freebusy.date) {
             freebusy.start = freebusy.date;
@@ -2511,8 +2511,8 @@
       },
 
       /**
-        * retrives the first freebusy manager matching demand.
-        */
+       * retrives the first freebusy manager matching demand.
+       */
       getFreeBusyManagersFor: function(date, users) {
         var calEvent = {
           start: date,
@@ -2522,8 +2522,8 @@
         return this.getFreeBusyManagerForEvent(calEvent);
       },
       /**
-        * retrives the first freebusy manager for given event.
-        */
+       * retrives the first freebusy manager for given event.
+       */
       getFreeBusyManagerForEvent: function(newCalEvent) {
         var self = this,
             options = this.options,
@@ -2551,9 +2551,9 @@
         return freeBusyManager;
       },
       /**
-        * appends the freebusys to replace the old ones.
-        * @param {array|object} freeBusys freebusy(s) to apply.
-        */
+       * appends the freebusys to replace the old ones.
+       * @param {array|object} freeBusys freebusy(s) to apply.
+       */
       updateFreeBusy: function(freeBusys) {
         var self = this,
             options = this.options;
@@ -2582,15 +2582,15 @@
       /* NEW OPTIONS MANAGEMENT */
 
       /**
-        * checks wether or not the calendar should be displayed starting on first day of week
-        */
+       * checks wether or not the calendar should be displayed starting on first day of week
+       */
       _startOnFirstDayOfWeek: function() {
         return jQuery.isFunction(this.options.startOnFirstDayOfWeek) ? this.options.startOnFirstDayOfWeek(this.element) : this.options.startOnFirstDayOfWeek;
       },
 
       /**
-        * finds out the current scroll to apply it when changing the view
-        */
+       * finds out the current scroll to apply it when changing the view
+       */
       _getCurrentScrollHour: function() {
           var self = this;
           var options = this.options;
@@ -2623,8 +2623,8 @@
 
 
       /**
-        * returns corrected date related to DST problem
-        */
+       * returns corrected date related to DST problem
+       */
       _getDSTdayShift: function(date, shift) {
       var start = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0);
       var offset1 = start.getTimezoneOffset();
@@ -2701,9 +2701,9 @@
     };
 
     /**
-      * @constructor
-      * single user freebusy manager.
-      */
+     * @constructor
+     * single user freebusy manager.
+     */
     var FreeBusy = function(options) {
       this.options = $.extend({}, options || {});
     };
@@ -2721,14 +2721,14 @@
     };
     $.extend(FreeBusyManager.prototype, FreeBusyProto, {
       /**
-        * return matching freeBusys.
-        * if you do not pass any argument, returns all freebusys.
-        * if you only pass a start date, only matchinf freebusy will be returned.
-        * if you pass 2 arguments, then all freebusys available within the time period will be returned
-        * @param {Date} start [optionnal] if you do not pass end date, will return the freeBusy within which this date falls.
-        * @param {Date} end [optionnal] the date where to stop the search.
-        * @return {Array} an array of FreeBusy matching arguments.
-        */
+       * return matching freeBusys.
+       * if you do not pass any argument, returns all freebusys.
+       * if you only pass a start date, only matchinf freebusy will be returned.
+       * if you pass 2 arguments, then all freebusys available within the time period will be returned
+       * @param {Date} start [optionnal] if you do not pass end date, will return the freeBusy within which this date falls.
+       * @param {Date} end [optionnal] the date where to stop the search.
+       * @return {Array} an array of FreeBusy matching arguments.
+       */
       getFreeBusys: function() {
           switch (arguments.length) {
             case 0:
