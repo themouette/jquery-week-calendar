@@ -1399,26 +1399,27 @@
               var $weekDay;
               var isMultiday = false;
 
-              while (startDate < endDate) {
-                calEvent.start = start;
-                //end of this virual calEvent is set to the end of the day
-                calEvent.end.setFullYear(start.getFullYear());
-                calEvent.end.setDate(start.getDate());
-                calEvent.end.setMonth(start.getMonth());
-                calEvent.end.setHours(maxHour);
-                calEvent.end.setMinutes(0);
-                calEvent.end.setSeconds(0);
-                if (($weekDay = self._findWeekDayForEvent(calEvent, $weekDayColumns))) {
-                  self._renderEvent(calEvent, $weekDay);
-                }
-                //start is set to the begin of the new day
-                start.setDate(start.getDate() + 1);
-                start.setHours(minHour);
-                start.setMinutes(0);
-                start.setSeconds(0);
-                startDate = self._formatDate(start, 'Ymd');
-                isMultiday = true;
-              }
+				while (startDate < endDate) {
+					calEvent.start = start;
+					//end of this virual calEvent is set to the end of the day
+					var startFullYear = start.getFullYear();
+					var startDate = start.getDate();
+					var startMonth = start.getMonth();
+					var endHours = maxHour;
+					var endMinutes = 0;
+					var endSeconds = 0;
+					calEvent.end = new Date(startFullYear, startDate, startMonth, endHours, endMinutes, endSeconds);
+					if (($weekDay = self._findWeekDayForEvent(calEvent, $weekDayColumns))) {
+						self._renderEvent(calEvent, $weekDay);
+					}
+					//start is set to the begin of the new day
+					start.setDate(start.getDate() + 1);
+					start.setHours(minHour);
+					start.setMinutes(0);
+					start.setSeconds(0);
+					startDate = self._formatDate(start, 'Ymd');
+					isMultiday = true;
+				}
               if (start <= initialEnd) {
                 calEvent.start = start;
                 calEvent.end = initialEnd;
