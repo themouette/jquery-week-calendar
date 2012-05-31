@@ -1408,7 +1408,7 @@
 					var endHours = maxHour;
 					var endMinutes = 0;
 					var endSeconds = 0;
-					calEvent.end = new Date(startFullYear, startDate, startMonth, endHours, endMinutes, endSeconds);
+					calEvent.end = new Date(startFullYear, startMonth, startDate, endHours, endMinutes, endSeconds);
 					if (($weekDay = self._findWeekDayForEvent(calEvent, $weekDayColumns))) {
 						self._renderEvent(calEvent, $weekDay);
 					}
