@@ -531,7 +531,7 @@
           // events array locally in a store but this should be done in conjunction
           // with a proper binding model.
 
-          var currentEvents = $.map(self.element.find('.wc-cal-event'), function() {
+          var currentEvents = self.element.find('.wc-cal-event').map(function() {
             return $(this).data('calEvent');
           });
 
