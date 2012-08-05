@@ -1433,6 +1433,7 @@
 
           while (startDate < endDate) {
             calEvent.start = start;
+            calEvent.end = newDate(0, 0, 0);
 
             // end of this virual calEvent is set to the end of the day
             calEvent.end.setFullYear(start.getFullYear());
