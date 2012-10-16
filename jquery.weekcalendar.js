@@ -1322,6 +1322,14 @@
           $weekDayColumns.each(function(i, val) {
 
             $(this).data('startDate', self._cloneDate(currentDay));
+
+            var endDate = self._cloneDate(currentDay);
+            endDate.setTime(currentDay.getTime() + MILLIS_IN_DAY);
+
+            if(endDate.getTimezoneOffset() != currentDay.getTimezoneOffset()) {
+            	endDate.setTime(endDate.getTime()+(endDate.getTimezoneOffset()-currentDay.getTimezoneOffset())*60000);
+            }
+
             $(this).data('endDate', new Date(currentDay.getTime() + (MILLIS_IN_DAY)));
             if (self._isToday(currentDay)) {
                 $(this).parent()
