@@ -1586,38 +1586,51 @@
 
 			_adjustOverlappingEvents: function ($weekDay) {
 				var self = this;
-				if (self.options.allowCalEventOverlap) {
-					var groupsList = self._groupOverlappingEventElements($weekDay);
-					$.each(groupsList, function () {
-						var curGroups = this;
-						$.each(curGroups, function (groupIndex) {
-							var curGroup = this;
+				if (!self.options.allowCalEventOverlap) {
+					return;
+				}
+				var groupsList = self._groupOverlappingEventElements($weekDay);
+				if (!groupsList) {
+					return;
+				}
+				$.each(groupsList, function (index, element) {
+					var groupings = element;
+					$.each(groupings, function (index, element) {
+						var groupedCalEvents = element;
 
-							// do we want events to be displayed as overlapping
-							if (self.options.overlapEventsSeparate) {
-								var newWidth = self.options.totalEventsWidthPercentInOneColumn / curGroups.length;
-								var newLeft = groupIndex * newWidth;
-							} else {
-								// TODO what happens when the group has more than 10 elements
-								var newWidth = self.options.totalEventsWidthPercentInOneColumn - ((curGroups.length - 1) * 10);
-								var newLeft = groupIndex * 10;
-							}
-							$.each(curGroup, function () {
-								// bring mouseovered event to the front
-								if (!self.options.overlapEventsSeparate) {
-									$(this).bind('mouseover.z-index', function () {
-										var $elem = $(this);
-										$.each(curGroup, function () {
-											$(this).css({ 'z-index': '1' });
-										});
-										$elem.css({ 'z-index': '3' });
+						// do we want events to be displayed as overlapping
+						if (self.options.overlapEventsSeparate) {
+							var newWidth = self.options.totalEventsWidthPercentInOneColumn / groupings.length;
+							var newLeft = index * newWidth;
+						} else {
+							// TODO what happens when the group has more than 10 elements
+							var newWidth = self.options.totalEventsWidthPercentInOneColumn - ((groupings.length - 1) * 10);
+							var newLeft = index * 10;
+						}
+						var resetZIndexOfGroup = function () {
+							groupedCalEvents.css({
+								'z-index': 1
+							});
+						};
+						$.each(groupedCalEvents, function (index, element) {
+							var $element = $(element);
+							// bring mouseovered event to the front
+							if (!self.options.overlapEventsSeparate) {
+								$element.bind('mouseover.z-index', function () {
+									resetZIndexOfGroup();
+									$element.css({
+										'z-index': 3
 									});
-								}
-								$(this).css({ width: newWidth + '%', left: newLeft + '%', right: 0 });
+								});
+							}
+							$element.css({
+								width: newWidth + '%',
+								left: newLeft + '%',
+								right: 0
 							});
 						});
 					});
-				}
+				});
 			},
 
 
@@ -1625,8 +1638,10 @@
 			  * Find groups of overlapping events
 			  */
 			_groupOverlappingEventElements: function ($weekDay) {
-				//TODO
 				var $events = $weekDay.find('.wc-cal-event:visible');
+				if (!$events.length) {
+					return;
+				}
 				var complexEvents = jQuery.map($events, function (element, index) {
 					var $event = $(element);
 					var position = $event.position();
@@ -1654,7 +1669,7 @@
 					var $event = complexEvent.event;
 					var top = complexEvent.top;
 					var bottom = complexEvent.bottom;
-					if (!currentGroup || lastBottom < top) {
+					if (!currentGroup || lastBottom <= top) {
 						currentGroup = new Array();
 						groups.push(currentGroup);
 					}
