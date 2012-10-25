@@ -1,125 +1,119 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-<style type='text/css'>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <title>Demo JSON - jQuery Week Calendar</title>
 
-	body {
-		font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
-		margin: 0;
-	}
-	
-	h1 {
-		margin: 0;
-		padding: 0.5em;
-	}
-	
-	p.description {
-		font-size: 0.8em;
-		padding: 0 1em 1em;
-		margin: 0;
-	} 
-	
-	#message {
-		font-size: 0.7em;
-		position: absolute;
-		top: 1em; 
-		right: 1em;
-		width: 350px;
-		display: none;
-		padding: 1em;
-		background: #ffc;
-		border: 1px solid #dda;
-	}
-	
-</style>
-    <!--
-	<link rel='stylesheet' type='text/css' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/base/jquery-ui.css' />
-	-->
+  <link rel='stylesheet' type='text/css' href='libs/css/smoothness/jquery-ui-1.8.11.custom.css' />
+  <link rel='stylesheet' type='text/css' href='jquery.weekcalendar.css' />
+  <style type='text/css'>
+  body {
+    font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+    margin: 0;
+  }
 
-    <link rel='stylesheet' type='text/css' href='libs/css/smoothness/jquery-ui-1.8.11.custom.css' />
+  h1 {
+    margin: 0;
+    padding: 0.5em;
+  }
 
+  p.description {
+    font-size: 0.8em;
+    padding: 0 1em 1em;
+    margin: 0;
+  }
 
-	<link rel='stylesheet' type='text/css' href='jquery.weekcalendar.css' />
+  #message {
+    font-size: 0.7em;
+    position: absolute;
+    top: 1em;
+    right: 1em;
+    width: 350px;
+    display: none;
+    padding: 1em;
+    background: #ffc;
+    border: 1px solid #dda;
+  }
+  </style>
 
+  <script type='text/javascript' src='libs/jquery-1.4.4.min.js'></script>
+  <script type='text/javascript' src='libs/jquery-ui-1.8.11.custom.min.js'></script>
 
-	   <!--
-	<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js'></script>
-    <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js'></script>
-    -->
-
-   <script type='text/javascript' src='libs/jquery-1.4.4.min.js'></script>
-   <script type='text/javascript' src='libs/jquery-ui-1.8.11.custom.min.js'></script>
-   <script type='text/javascript' src='libs/date.js'></script>
-	<script type='text/javascript' src='jquery.weekcalendar.js'></script>
-   <script type='text/javascript'>
+  <script type='text/javascript' src='libs/date.js'></script>
+  <script type='text/javascript' src='jquery.weekcalendar.js'></script>
+  <script type='text/javascript'>
+  var year = new Date().getFullYear();
+  var month = new Date().getMonth();
+  var day = new Date().getDate();
 
 
-	var year = new Date().getFullYear();
-	var month = new Date().getMonth();
-	var day = new Date().getDate();
-
-	   
-	$(document).ready(function() {
-
-		$('#calendar').weekCalendar({
+  $(document).ready(function() {
+    $('#calendar').weekCalendar({
+      data: 'events.json',
       date: new Date('2009-05-10T13:15:00.000+10:00'),
       minDate: new Date('2009-05-01T13:15:00.000+10:00'),
       maxDate: new Date('2009-05-20T13:15:00.000+10:00'),
-      switchDisplay: {"1 day": 1,"3 days": 3,"Work week": 5, "Full week": 7},
-			timeslotsPerHour: 4,
-			height: function($calendar){
-				return $(window).height() - $("h1").outerHeight() - $(".description").outerHeight();
-			},
-			eventRender : function(calEvent, $event) {
-				if(calEvent.end.getTime() < new Date().getTime()) {
-					$event.css("backgroundColor", "#aaa");
-					$event.find(".time").css({"backgroundColor": "#999", "border":"1px solid #888"});
-				}
-			},
-			eventNew : function(calEvent, $event) {
-				displayMessage("<strong>Added event</strong><br/>Start: " + calEvent.start + "<br/>End: " + calEvent.end);
-				alert("You've added a new event. You would capture this event, add the logic for creating a new event with your own fields, data and whatever backend persistence you require.");
-			},
-			eventDrop : function(calEvent, $event) {
-				displayMessage("<strong>Moved Event</strong><br/>Start: " + calEvent.start + "<br/>End: " + calEvent.end);
-			},
-			eventResize : function(calEvent, $event) {
-				displayMessage("<strong>Resized Event</strong><br/>Start: " + calEvent.start + "<br/>End: " + calEvent.end);
-			},
-			eventClick : function(calEvent, $event) {
-				displayMessage("<strong>Clicked Event</strong><br/>Start: " + calEvent.start + "<br/>End: " + calEvent.end);
-			},
-			eventMouseover : function(calEvent, $event) {
-				displayMessage("<strong>Mouseover Event</strong><br/>Start: " + calEvent.start + "<br/>End: " + calEvent.end);
-			},
-			eventMouseout : function(calEvent, $event) {
-				displayMessage("<strong>Mouseout Event</strong><br/>Start: " + calEvent.start + "<br/>End: " + calEvent.end);
-			},
-			noEvents : function() {
-				displayMessage("There are no events for this week");
-			},
-			data:"events.json",
-      reachedmindate: function($calendar, date){
-        displayMessage("You reached mindate");
+      switchDisplay: {'1 day': 1,'3 days': 3,'Work week': 5, 'Full week': 7},
+      timeslotsPerHour: 4,
+      height: function($calendar) {
+        return $(window).height() - $('h1').outerHeight() - $('.description').outerHeight();
       },
-      reachedmaxdate: function($calendar, date){
-        displayMessage("You cannot go further");
+      eventRender: function(calEvent, $event) {
+        if (calEvent.end.getTime() < new Date().getTime()) {
+          $event.css('backgroundColor', '#aaa');
+          $event.find('.time').css({
+            backgroundColor: '#999',
+            border:'1px solid #888'
+          });
+        }
+      },
+      eventNew: function(calEvent, $event) {
+        displayMessage('<strong>Added event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
+        alert('You\'ve added a new event. You would capture this event, add the logic for creating a new event with your own fields, data and whatever backend persistence you require.');
+      },
+      eventDrop: function(calEvent, $event) {
+        displayMessage('<strong>Moved Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
+      },
+      eventResize: function(calEvent, $event) {
+        displayMessage('<strong>Resized Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
+      },
+      eventClick: function(calEvent, $event) {
+        displayMessage('<strong>Clicked Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
+      },
+      eventMouseover: function(calEvent, $event) {
+        displayMessage('<strong>Mouseover Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
+      },
+      eventMouseout: function(calEvent, $event) {
+        displayMessage('<strong>Mouseout Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
+      },
+      noEvents: function() {
+        displayMessage('There are no events for this week');
+      },
+      reachedmindate: function($calendar, date) {
+        displayMessage('You reached mindate');
+      },
+      reachedmaxdate: function($calendar, date) {
+        displayMessage('You cannot go further');
       }
-		});
+    });
 
-		function displayMessage(message) {
-			$("#message").html(message).fadeIn();
-		}
+    function displayMessage(message) {
+      $('#message').html(message).fadeIn();
+    }
 
-		$("<div id=\"message\" class=\"ui-corner-all\"></div>").prependTo($("body"));
-		
-	});
+    $('<div id="message" class="ui-corner-all"></div>').prependTo($('body'));
+  });
 
 </script>
 </head>
 <body>
-	<h1>Week Calendar Demo (JSON data source)</h1>
-	<p class="description">Please Note ***. This demo uses static json data. For this reason, in order to see any event data, please edit events.json to use current dates.</p>
-	<div id='calendar'></div>
+  <h1>Week Calendar Demo (JSON data source)</h1>
+
+  <p class="description">
+    Please Note ***. This demo uses static json data. For this reason, in
+    order to see any event data, please edit events.json to use current dates.
+  </p>
+
+  <div id="calendar"></div>
 </body>
 </html>

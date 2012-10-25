@@ -1,204 +1,200 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-<style type='text/css'>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <title>Demo 2 - jQuery Week Calendar</title>
 
-	body {
-		font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
-		margin: 0;
-	}
-	
-	h1 {
-		margin:0 0 2em;
-		padding: 0.5em;
-		font-size: 1.3em;
-	} 
-	
-	p.description {
-		font-size: 0.8em;
-		padding: 1em;
-		position: absolute;
-		top: 3.2em;
-		margin-right: 400px;
-	}
-	
-	#calendar_selection {
-		font-size: 0.7em;
-		position: absolute;
-		top: 1em; 
-		right: 1em;
-		padding: 1em;
-		background: #ffc;
-		border: 1px solid #dda;
-		width: 270px;
-	}
-	
-	#message {
-		font-size: 0.7em;
-		position: absolute;
-		top: 1em; 
-		right: 320px;
-		padding: 1em;
-		background: #ddf;
-		border: 1px solid #aad;
-		width: 270px;
-	}
-	
-	
-</style>
-    <!--
-	<link rel='stylesheet' type='text/css' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/base/jquery-ui.css' />
+  <link rel='stylesheet' type='text/css' href='libs/css/smoothness/jquery-ui-1.8.11.custom.css' />
+  <link rel='stylesheet' type='text/css' href='jquery.weekcalendar.css' />
+  <link rel="stylesheet" type="text/css" href="skins/default.css" />
+  <style type='text/css'>
+  body {
+    font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+    margin: 0;
+  }
 
-	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/smoothness/jquery-ui.css" />
-	-->
-    <link rel='stylesheet' type='text/css' href='libs/css/smoothness/jquery-ui-1.8.11.custom.css' />
+  h1 {
+    margin:0 0 2em;
+    padding: 0.5em;
+    font-size: 1.3em;
+  }
 
+  p.description {
+    font-size: 0.8em;
+    padding: 1em;
+    position: absolute;
+    top: 3.2em;
+    margin-right: 400px;
+  }
 
-	<link rel='stylesheet' type='text/css' href='jquery.weekcalendar.css' />
-	<link rel="stylesheet" type="text/css" href="skins/default.css" />
+  .clearer {
+    clear: both;
+  }
 
+  #calendar_selection {
+    font-size: 0.7em;
+    position: absolute;
+    top: 1em;
+    right: 1em;
+    padding: 1em;
+    background: #ffc;
+    border: 1px solid #dda;
+    width: 270px;
+  }
 
-	   <!--
-	<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js'></script>
-    <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js'></script>
-    -->
+  #message {
+    font-size: 0.7em;
+    padding: 1em;
+    margin-right: 1em;
+    margin-bottom: 10px;
+    background: #ddf;
+    border: 1px solid #aad;
+    width: 270px;
+    float: right;
+  }
+  </style>
 
-   <script type='text/javascript' src='libs/jquery-1.4.4.min.js'></script>
-    <script type='text/javascript' src='libs/jquery-ui-1.8.11.custom.min.js'></script>
-	<script type="text/javascript" src="libs/date.js"></script>
-	<script type='text/javascript' src='jquery.weekcalendar.js'></script>
-<script type='text/javascript'>
+  <script type='text/javascript' src='libs/jquery-1.4.4.min.js'></script>
+  <script type='text/javascript' src='libs/jquery-ui-1.8.11.custom.min.js'></script>
+
+  <script type="text/javascript" src="libs/date.js"></script>
+  <script type='text/javascript' src='jquery.weekcalendar.js'></script>
+  <script type='text/javascript'>
 
 
-	var year = new Date().getFullYear();
-	var month = new Date().getMonth();
-	var day = new Date().getDate();
+  var year = new Date().getFullYear();
+  var month = new Date().getMonth();
+  var day = new Date().getDate();
 
-	var eventData1 = {
-			options: {
-				timeslotsPerHour: 4,
-				timeslotHeight: 20
-			},
-			events : [
-			   {"id":1, "start": new Date(year, month, day, 12), "end": new Date(year, month, day, 13, 30),"title":"Lunch with Mike"},
-			   {"id":2, "start": new Date(year, month, day, 14), "end": new Date(year, month, day, 14, 45),"title":"Dev Meeting"},
-			   {"id":3, "start": new Date(year, month, day + 1, 18), "end": new Date(year, month, day + 1, 18, 45),"title":"Hair cut"},
-			   {"id":4, "start": new Date(year, month, day - 1, 8), "end": new Date(year, month, day - 1, 9, 30),"title":"Team breakfast"},
-			   {"id":5, "start": new Date(year, month, day + 1, 14), "end": new Date(year, month, day + 1, 15),"title":"Product showcase"}
-			]
-		};
+  var eventData1 = {
+    options: {
+      timeslotsPerHour: 4,
+      timeslotHeight: 20
+    },
+    events : [
+       {'id':1, 'start': new Date(year, month, day, 12), 'end': new Date(year, month, day, 13, 30),'title':'Lunch with Mike'},
+       {'id':2, 'start': new Date(year, month, day, 14), 'end': new Date(year, month, day, 14, 45),'title':'Dev Meeting'},
+       {'id':3, 'start': new Date(year, month, day + 1, 18), 'end': new Date(year, month, day + 1, 18, 45),'title':'Hair cut'},
+       {'id':4, 'start': new Date(year, month, day - 1, 8), 'end': new Date(year, month, day - 1, 9, 30),'title':'Team breakfast'},
+       {'id':5, 'start': new Date(year, month, day + 1, 14), 'end': new Date(year, month, day + 1, 15),'title':'Product showcase'}
+    ]
+  };
 
-	var eventData2 = {
-			options: {
-				timeslotsPerHour: 3,
-				timeslotHeight: 30
-			},
-			events : [
-			   {"id":1, "start": new Date(year, month, day, 12), "end": new Date(year, month, day, 13, 00),"title":"Lunch with Sarah"},
-			   {"id":2, "start": new Date(year, month, day, 14), "end": new Date(year, month, day, 14, 40),"title":"Team Meeting"},
-			   {"id":3, "start": new Date(year, month, day + 1, 18), "end": new Date(year, month, day + 1, 18, 40),"title":"Meet with Joe"},
-			   {"id":4, "start": new Date(year, month, day - 1, 8), "end": new Date(year, month, day - 1, 9, 20),"title":"Coffee with Alison"},
-			   {"id":5, "start": new Date(year, month, day + 1, 14), "end": new Date(year, month, day + 1, 15),"title":"Product showcase"}
-			]
-		};
+  var eventData2 = {
+    options: {
+      timeslotsPerHour: 3,
+      timeslotHeight: 30
+    },
+    events : [
+       {'id':1, 'start': new Date(year, month, day, 12), 'end': new Date(year, month, day, 13, 00),'title':'Lunch with Sarah'},
+       {'id':2, 'start': new Date(year, month, day, 14), 'end': new Date(year, month, day, 14, 40),'title':'Team Meeting'},
+       {'id':3, 'start': new Date(year, month, day + 1, 18), 'end': new Date(year, month, day + 1, 18, 40),'title':'Meet with Joe'},
+       {'id':4, 'start': new Date(year, month, day - 1, 8), 'end': new Date(year, month, day - 1, 9, 20),'title':'Coffee with Alison'},
+       {'id':5, 'start': new Date(year, month, day + 1, 14), 'end': new Date(year, month, day + 1, 15),'title':'Product showcase'}
+    ]
+  };
 
-         
+
         // data set 3 : using event delete features
-	var eventData3 = {
-			options: {
-				allowEventDelete: true,
-				eventDelete: function(calEvent, element, dayFreeBusyManager, 
-                                                      calendar, clickEvent) {
-				    if ( confirm('You want to delete this event?') ) {
-					calendar.weekCalendar('removeEvent',calEvent.id);
-				    }
-				},
-				deletable: function(calEvent, element) {
-				    return calEvent.start > Date.today();
-				}
-			},
-			events : [
-			   {"id":1, "start": new Date(year, month, day, 12), "end": new Date(year, month, day, 13, 00),"title":"Lunch with Ashley"},
-			   {"id":2, "start": new Date(year, month, day, 14), "end": new Date(year, month, day, 14, 40),"title":"Team Picnic"},
-			   {"id":3, "start": new Date(year, month, day + 1, 18), "end": new Date(year, month, day + 1, 18, 40),"title":"Meet with Cathy"},
-			   {"id":4, "start": new Date(year, month, day - 1, 8), "end": new Date(year, month, day - 1, 9, 20),"title":"Coffee with Alyssa"},
-			   {"id":5, "start": new Date(year, month, day + 1, 14), "end": new Date(year, month, day + 1, 15),"title":"Product kickoff"}
-			]
-		};
-	   
-	$(document).ready(function() {
+  var eventData3 = {
+    options: {
+      allowEventDelete: true,
+      eventDelete: function(calEvent, element, dayFreeBusyManager, calendar, clickEvent) {
+        if (confirm('You want to delete this event?')) {
+          calendar.weekCalendar('removeEvent',calEvent.id);
+        }
+      },
+      deletable: function(calEvent, element) {
+        return calEvent.start > Date.today();
+      }
+    },
+    events : [
+       {'id':1, 'start': new Date(year, month, day, 12), 'end': new Date(year, month, day, 13, 00),'title':'Lunch with Ashley'},
+       {'id':2, 'start': new Date(year, month, day, 14), 'end': new Date(year, month, day, 14, 40),'title':'Team Picnic'},
+       {'id':3, 'start': new Date(year, month, day + 1, 18), 'end': new Date(year, month, day + 1, 18, 40),'title':'Meet with Cathy'},
+       {'id':4, 'start': new Date(year, month, day - 1, 8), 'end': new Date(year, month, day - 1, 9, 20),'title':'Coffee with Alyssa'},
+       {'id':5, 'start': new Date(year, month, day + 1, 14), 'end': new Date(year, month, day + 1, 15),'title':'Product kickoff'}
+    ]
+  };
 
-		var $calendar = $('#calendar').weekCalendar({
-			timeslotsPerHour: 4,
-			scrollToHourMillis : 0,
-			height: function($calendar){
-				return $(window).height() - $("h1").outerHeight(true);
-			},
-			eventRender : function(calEvent, $event) {
-				if(calEvent.end.getTime() < new Date().getTime()) {
-					$event.css("backgroundColor", "#aaa");
-					$event.find(".time").css({"backgroundColor": "#999", "border":"1px solid #888"});
-				}
-			},
-			eventNew : function(calEvent, $event) {
-				alert("You've added a new event. You would capture this event, add the logic for creating a new event with your own fields, data and whatever backend persistence you require.");
-			},
-			data: function(start, end, callback) {
+  $(document).ready(function() {
+    var $calendar = $('#calendar').weekCalendar({
+      timeslotsPerHour: 4,
+      scrollToHourMillis : 0,
+      height: function($calendar){
+        return $(window).height() - $('h1').outerHeight(true);
+      },
+      eventRender : function(calEvent, $event) {
+        if(calEvent.end.getTime() < new Date().getTime()) {
+          $event.css('backgroundColor', '#aaa');
+          $event.find('.time').css({'backgroundColor': '#999', 'border':'1px solid #888'});
+        }
+      },
+      eventNew : function(calEvent, $event) {
+        alert('You\'ve added a new event. You would capture this event, add the logic for creating a new event with your own fields, data and whatever backend persistence you require.');
+      },
+      data: function(start, end, callback) {
+        var dataSource = $('#data_source').val();
 
-				var dataSource = $("#data_source").val();
-				if(dataSource === "1") {
-					callback(eventData1);
-				} else if(dataSource === "2") {
-					callback(eventData2);
-				} else if(dataSource === "3") {
-					callback(eventData3);
-				} else {
-					callback([]);
-				}
-            }
-		});
+        if (dataSource === '1') {
+          callback(eventData1);
+        } else if(dataSource === '2') {
+          callback(eventData2);
+        } else if(dataSource === '3') {
+          callback(eventData3);
+        } else {
+          callback([]);
+        }
+      }
+    });
 
-		$("#data_source").change(function() {
-			$calendar.weekCalendar("refresh");
-			updateMessage();
-			
-		});
+    $('#data_source').change(function() {
+      $calendar.weekCalendar('refresh');
+      updateMessage();
+    });
 
-		function updateMessage() {
-			var dataSource = $("#data_source").val();
-			$("#message").fadeOut(function(){
-				if(dataSource === "1") {
-					$("#message").text("Displaying event data set 1 with timeslots per hour of 4 and timeslot height of 20px");
-				} else if(dataSource === "2") {
-					$("#message").text("Displaying event data set 2 with timeslots per hour of 3 and timeslot height of 30px");
-				} else if(dataSource === "3") {
-					$("#message").text("Displaying event data set 3 with allowEventDelete enabled. Events before today will not be deletable. A confirmation dialog is opened when you delete an event.");
-				} else {
-					$("#message").text("Displaying no events.");
-				}
-				$(this).fadeIn();
-			});
-		}
+    function updateMessage() {
+      var dataSource = $('#data_source').val();
+      $('#message').fadeOut(function(){
+        if(dataSource === '1') {
+          $('#message').text('Displaying event data set 1 with timeslots per hour of 4 and timeslot height of 20px');
+        } else if(dataSource === '2') {
+          $('#message').text('Displaying event data set 2 with timeslots per hour of 3 and timeslot height of 30px');
+        } else if(dataSource === '3') {
+          $('#message').text('Displaying event data set 3 with allowEventDelete enabled. Events before today will not be deletable. A confirmation dialog is opened when you delete an event.');
+        } else {
+          $('#message').text('Displaying no events.');
+        }
+        $(this).fadeIn();
+      });
+    }
 
-		updateMessage();
-		
-	});
-
-</script>
+    updateMessage();
+  });
+  </script>
 </head>
 <body>
-	<h1>Week Calendar Demo (Data supplied config overrides)</h1>
-	<p class="description">This calendar demonstrates the ability to return calendar configuration options with an event dataset.</p>
-	<div id="message" class="ui-corner-all"></div>
-	<div id="calendar_selection" class="ui-corner-all">
-		<strong>Event Data Source: </strong>
-		<select id="data_source">
-			<option value="">Select Event Data</option>
-			<option value="1">Event Data 1</option>
-			<option value="2">Event data 2</option>
-			<option value="3">Event data 3</option>
-		</select>
-	</div>
-	<div id='calendar'></div>
+  <h1>Week Calendar Demo (Data supplied config overrides)</h1>
+
+  <p class="description">
+    This calendar demonstrates the ability to return calendar configuration
+    options with an event dataset.
+  </p>
+
+  <div id="message" class="ui-corner-all"></div>
+
+  <div class="clearer"></div>
+
+  <div id="calendar_selection" class="ui-corner-all">
+    <strong>Event Data Source: </strong>
+    <select id="data_source">
+      <option value="">Select Event Data</option>
+      <option value="1">Event Data 1</option>
+      <option value="2">Event data 2</option>
+      <option value="3">Event data 3</option>
+    </select>
+  </div>
+
+  <div id="calendar"></div>
 </body>
 </html>

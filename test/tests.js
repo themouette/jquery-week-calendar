@@ -55,36 +55,27 @@ test('date parsing', function() {
   var $calendar = $('#calendar');
   $calendar.weekCalendar();
 
-  expect(13);
+  expect(15);
 
-  var _cleanDate = $calendar.data('weekCalendar')._cleanDate,
-      _curdate;
-  ok($.isFunction(_cleanDate), 'check _cleanDate is a function');
+  var _cleanDate = $.proxy($calendar.data('weekCalendar'), '_cleanDate'),
+      _curdate,
+      testData = [
+        {value: new Date('Fri Jul 16 2010 14:15:00'), expected: new Date('Fri Jul 16 2010 14:15:00').getTime()},
+        {value: 1276683300000, expected: 1276683300000},
+        {value: '1276683300000', expected: 1276683300000},
+        {value: '2010-06-16T12:15:00+02:00', expected: 1276683300000},
+        {value: '2010-06-16T12:15:00.000+02:00', expected: 1276683300000},
+        {value: 'Wed Jun 16 2010 12:15:00 GMT+0200', expected: 1276683300000},
+        {value: '2010-06-16T12:15', expected: 1276683300000},
+      ];
 
-  _curdate = _cleanDate(new Date('Fri Jul 16 2010 14:15:00'));
-  ok(_curdate instanceof Date, '"new Date(\'Fri Jul 16 2010 14:15:00\')": parsed date is a Date object');
-  equal(_curdate.getTime(), new Date('Fri Jul 16 2010 14:15:00').getTime(), 'expected time');
+  ok($.isFunction($calendar.data('weekCalendar')._cleanDate), 'check _cleanDate is a function');
 
-  _curdate = _cleanDate(1276683300000);
-  ok(_curdate instanceof Date, '"1276683300000": parsed date is a Date object');
-  equal(_curdate.getTime(), 1276683300000, 'expected time');
-
-  _curdate = _cleanDate('2010-06-16T12:15:00+02:00');
-  ok(_curdate instanceof Date, '"2010-06-16T12:15:00+02:00": parsed date is a Date object');
-  equal(_curdate.getTime(), 1276683300000, 'expected time');
-
-  _curdate = _cleanDate('2010-06-16T12:15:00.000+02:00');
-  ok(_curdate instanceof Date, '"2010-06-16T12:15:00.000+02:00": parsed date is a Date object');
-  equal(_curdate.getTime(), 1276683300000, 'expected time');
-
-  _curdate = _cleanDate('Wed Jun 16 2010 12:15:00 GMT+0200');
-  ok(_curdate instanceof Date, '"Wed Jun 16 2010 12:15:00 GMT+0200": parsed date is a Date object');
-  equal(_curdate.getTime(), 1276683300000, 'expected time');
-
-  _curdate = _cleanDate('2010-06-16T12:15');
-  ok(_curdate instanceof Date, '"2010-06-16T12:15": parsed date is a Date object');
-  equal(_curdate.getTime(), 1276683300000, 'expected time');
-
+  $(testData).each(function(i, item) {
+    _curdate = $calendar.data('weekCalendar')._cleanDate(item.value);
+    ok(_curdate instanceof Date, 'Case ' + i + ': "_cleanDate" returns a Date instance');
+    equal(_curdate.getTime(), item.expected, 'Case ' + i + ': The returned date is correct.');
+  });
 });
 
 test('Date internationalization', function() {

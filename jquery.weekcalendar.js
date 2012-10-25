@@ -26,7 +26,8 @@
       _jQuery14OrLower = (10 * _v[0] + _v[1]) < 15;
 
   $.widget('ui.weekCalendar', (function() {
-    var _currentAjaxCall;
+    var _currentAjaxCall, _hourLineTimeout;
+
     return {
       options: {
         date: new Date(),
@@ -55,6 +56,7 @@
         timeslotsPerHour: 4,
         minDate: null,
         maxDate: null,
+        showHeader: true,
         buttons: true,
         buttonText: {
           today: 'today',
@@ -63,12 +65,13 @@
         },
         switchDisplay: {},
         scrollToHourMillis: 500,
-	allowEventDelete: false,
+        allowEventDelete: false,
         allowCalEventOverlap: false,
         overlapEventsSeparate: false,
-        totalEventsWidthPercentInOneColumn : 100,
+        totalEventsWidthPercentInOneColumn: 100,
         readonly: false,
         allowEventCreation: true,
+        hourLine: false,
         deletable: function(calEvent, element) {
           return true;
         },
@@ -529,7 +532,7 @@
           // events array locally in a store but this should be done in conjunction
           // with a proper binding model.
 
-          var currentEvents = $.map(self.element.find('.wc-cal-event'), function() {
+          var currentEvents = self.element.find('.wc-cal-event').map(function() {
             return $(this).data('calEvent');
           });
 
@@ -690,6 +693,7 @@
         */
       _renderCalendarButtons: function($calendarContainer) {
         var self = this, options = this.options;
+        if ( !options.showHeader ) return;
         if (options.buttons) {
             var calendarNavHtml = '';
 
@@ -1247,8 +1251,36 @@
             }
 
           self._disableTextSelect($weekDayColumns);
+      },
 
+      /**
+       * Draws a thin line which indicates the current time.
+       */
+      _drawCurrentHourLine: function() {
+        var d = new Date(),
+            options = this.options,
+            businessHours = options.businessHours;
 
+        // first, we remove the old hourline if it exists
+        $('.wc-hourline', this.element).remove();
+
+        // the line does not need to be displayed
+        if (businessHours.limitDisplay && d.getHours() > businessHours.end) {
+          return;
+        }
+
+        // then we recreate it
+        var paddingStart = businessHours.limitDisplay ? businessHours.start : 0;
+        var nbHours = d.getHours() - paddingStart + d.getMinutes() / 60;
+        var positionTop = nbHours * options.timeslotHeight * options.timeslotsPerHour;
+        var lineWidth = $('.wc-scrollable-grid .wc-today', this.element).width() + 3;
+
+        $('.wc-scrollable-grid .wc-today', this.element).append(
+          $('<div>', {
+            'class': 'wc-hourline',
+            style: 'top: ' + positionTop + 'px; width: ' + lineWidth + 'px'
+          })
+        );
       },
 
       /*
@@ -1347,37 +1379,37 @@
         return this.options.title || '';
       },
 
-      /*
-        * Render the events into the calendar
-        */
+      /**
+       * Render the events into the calendar
+       */
       _renderEvents: function(data, $weekDayColumns) {
-          var self = this;
-          var options = this.options;
-          var eventsToRender;
+        var self = this;
+        var options = this.options;
+        var eventsToRender, nbRenderedEvents = 0;
 
-          if (data.options) {
-            var updateLayout = false;
-            //update options
-            $.each(data.options, function(key, value) {
-                if (value !== options[key]) {
-                  options[key] = value;
-                  updateLayout = updateLayout || $.ui.weekCalendar.updateLayoutOptions[key];
-                }
-            });
-
-            self._computeOptions();
-
-            if (updateLayout) {
-                var hour = self._getCurrentScrollHour();
-                self.element.empty();
-                self._renderCalendar();
-                $weekDayColumns = self.element.find('.wc-time-slots .wc-day-column-inner');
-                self._updateDayColumnHeader($weekDayColumns);
-                self._resizeCalendar();
-                self._scrollToHour(hour, false);
+        if (data.options) {
+          var updateLayout = false;
+          // update options
+          $.each(data.options, function(key, value) {
+            if (value !== options[key]) {
+              options[key] = value;
+              updateLayout = updateLayout || $.ui.weekCalendar.updateLayoutOptions[key];
             }
+          });
+
+          self._computeOptions();
+
+          if (updateLayout) {
+            var hour = self._getCurrentScrollHour();
+            self.element.empty();
+            self._renderCalendar();
+            $weekDayColumns = self.element.find('.wc-time-slots .wc-day-column-inner');
+            self._updateDayColumnHeader($weekDayColumns);
+            self._resizeCalendar();
+            self._scrollToHour(hour, false);
           }
-          this._clearCalendar();
+        }
+        this._clearCalendar();
 
           if ($.isArray(data)) {
             eventsToRender = self._cleanEvents(data);
@@ -1411,6 +1443,7 @@
 					calEvent.end = new Date(startFullYear, startMonth, startDate, endHours, endMinutes, endSeconds);
 					if (($weekDay = self._findWeekDayForEvent(calEvent, $weekDayColumns))) {
 						self._renderEvent(calEvent, $weekDay);
+						nbRenderedEvents += 1;
 					}
 					//start is set to the begin of the new day
 					start.setDate(start.getDate() + 1);
@@ -1425,23 +1458,31 @@
                 calEvent.end = initialEnd;
                 if (((isMultiday && calEvent.start.getTime() != calEvent.end.getTime()) || !isMultiday) && ($weekDay = self._findWeekDayForEvent(calEvent, $weekDayColumns))) {
                   self._renderEvent(calEvent, $weekDay);
+				  nbRenderedEvents += 1;
                 }
               }
 
-              //put back the initial start date
-              calEvent.start = initialStart;
-          });
+          // put back the initial start date
+          calEvent.start = initialStart;
+        });
 
-          $weekDayColumns.each(function() {
-            self._adjustOverlappingEvents($(this));
-          });
+        $weekDayColumns.each(function() {
+          self._adjustOverlappingEvents($(this));
+        });
 
-          options.calendarAfterLoad(self.element);
+        options.calendarAfterLoad(self.element);
 
-          if (!eventsToRender.length) {
-            options.noEvents();
-          }
+        _hourLineTimeout && clearInterval(_hourLineTimeout);
 
+        if (options.hourLine) {
+          self._drawCurrentHourLine();
+
+          _hourLineTimeout = setInterval(function() {
+            self._drawCurrentHourLine();
+          }, 60 * 1000); // redraw the line each minute
+        }
+		
+        !nbRenderedEvents && options.noEvents();
       },
 
       /*
@@ -1729,25 +1770,26 @@
           $calEvent.data('calEvent', newCalEvent);
       },
 
-      /*
-        * Add draggable capabilities to an event
-        */
+      /**
+       * Add draggable capabilities to an event
+       */
       _addDraggableToCalEvent: function(calEvent, $calEvent) {
-          var options = this.options;
-          $calEvent.draggable({
-            handle: '.wc-time',
-            containment: 'div.wc-time-slots',
-            snap: '.wc-day-column-inner',
-            snapMode: 'inner',
-            snapTolerance: options.timeslotHeight - 1,
-            revert: 'invalid',
-            opacity: 0.5,
-            grid: [$calEvent.outerWidth() + 1, options.timeslotHeight],
-            start: function(event, ui) {
-                var $calEvent = ui.draggable;
-                options.eventDrag(calEvent, $calEvent);
-            }
-          });
+        var options = this.options;
+
+        $calEvent.draggable({
+          handle: '.wc-time',
+          containment: 'div.wc-time-slots',
+          snap: '.wc-day-column-inner',
+          snapMode: 'inner',
+          snapTolerance: options.timeslotHeight - 1,
+          revert: 'invalid',
+          opacity: 0.5,
+          grid: [$calEvent.outerWidth() + 1, options.timeslotHeight],
+          start: function(event, ui) {
+            var $calEvent = ui.draggable || ui.helper;
+            options.eventDrag(calEvent, $calEvent);
+          }
+        });
       },
 
       /*
@@ -2117,21 +2159,31 @@
           return new Date(d.getTime());
       },
 
-      /*
-        * return a date for different representations
-        */
+      /**
+       * Return a Date instance for different representations.
+       * Valid representations are:
+       *  * timestamps
+       *  * Date objects
+       *  * textual representations (only these accepted by the Date
+       *    constructor)
+       *
+       *  @return {Date} The clean date object.
+       */
       _cleanDate: function(d) {
-          if (typeof d == 'string') {
+          if (typeof d === 'string') {
             // if is numeric
-            if (!isNaN(parseFloat(d)) && isFinite()) {
+            if (!isNaN(Number(d))) {
               return this._cleanDate(parseInt(d, 10));
             }
+
             // this is a human readable date
             return Date.parse(d) || new Date(d);
           }
+
           if (typeof d == 'number') {
             return new Date(d);
           }
+
           return d;
       },
 

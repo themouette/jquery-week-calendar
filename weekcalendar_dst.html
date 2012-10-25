@@ -1,94 +1,86 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-<style type='text/css'>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <title>Demo DST - jQuery Week Calendar</title>
 
-	body {
-		font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
-		margin: 0;
-	}
-	
-	h1 {
-		margin: 0;
-		padding: 0.5em;
-	}
-	
-	p.description {
-		font-size: 0.8em;
-		padding: 0 1em 1em;
-		margin: 0;
-	} 
-	
-	
-</style>
-    <!--
-	<link rel='stylesheet' type='text/css' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/base/jquery-ui.css' />
-	-->
+  <link rel='stylesheet' type='text/css' href='libs/css/smoothness/jquery-ui-1.8.11.custom.css' />
+  <link rel='stylesheet' type='text/css' href='jquery.weekcalendar.css' />
+  <style type="text/css">
+  body {
+    font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+    margin: 0;
+  }
 
-    <link rel='stylesheet' type='text/css' href='libs/css/smoothness/jquery-ui-1.8.11.custom.css' />
+  h1 {
+    margin: 0;
+    padding: 0.5em;
+  }
 
+  p.description {
+    font-size: 0.8em;
+    padding: 0 1em 1em;
+    margin: 0;
+  }
+  </style>
 
-	<link rel='stylesheet' type='text/css' href='jquery.weekcalendar.css' />
+  <script type='text/javascript' src='libs/jquery-1.4.4.min.js'></script>
+  <script type='text/javascript' src='libs/jquery-ui-1.8.11.custom.min.js'></script>
 
+  <script type='text/javascript' src='libs/date.js'></script>
+  <script type='text/javascript' src='jquery.weekcalendar.js'></script>
+  <script type='text/javascript'>
 
-	   <!--
-	<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js'></script>
-    <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js'></script>
-    -->
+  var eventData = {
+    events : [
+      {'id':1, 'start': new Date(2010, 9, 30, 12), 'end': new Date(2010, 9, 30, 13, 30),'title':'Lunch with Mike'},
+      {'id':2, 'start': new Date(2010, 9, 30, 14), 'end': new Date(2010, 9, 30, 16),'title':'Dev Meeting'},
+      {'id':3, 'start': new Date(2010, 9, 30, 18), 'end': new Date(2010, 9, 30, 18, 45),'title':'Hair cut'},
+      {'id':4, 'start': new Date(2010, 9, 31, 12), 'end': new Date(2010, 9, 31, 13, 30),'title':'Lunch with Mike'},
+      {'id':5, 'start': new Date(2010, 9, 31, 14), 'end': new Date(2010, 9, 31, 16),'title':'Dev Meeting'},
+      {'id':6, 'start': new Date(2010, 9, 31, 18), 'end': new Date(2010, 9, 31, 18, 45),'title':'Hair cut'},
+      {'id':7, 'start': new Date(2010, 10, 1, 12), 'end': new Date(2010, 10, 1, 13, 30),'title':'Lunch with Mike'},
+      {'id':8, 'start': new Date(2010, 10, 1, 14), 'end': new Date(2010, 10, 1, 16),'title':'Dev Meeting'},
+      {'id':9, 'start': new Date(2010, 10, 1, 18), 'end': new Date(2010, 10, 1, 18, 45),'title':'Hair cut'},
+      {'id':10, 'start': new Date(2010, 2, 27, 12), 'end': new Date(2010, 2, 27, 13, 30),'title':'Lunch with Mike'},
+      {'id':11, 'start': new Date(2010, 2, 27, 14), 'end': new Date(2010, 2, 27, 16),'title':'Dev Meeting'},
+      {'id':12, 'start': new Date(2010, 2, 27, 18), 'end': new Date(2010, 2, 27, 18, 45),'title':'Hair cut'},
+      {'id':13, 'start': new Date(2010, 2, 28, 12), 'end': new Date(2010, 2, 28, 13, 30),'title':'Lunch with Mike'},
+      {'id':14, 'start': new Date(2010, 2, 28, 14), 'end': new Date(2010, 2, 28, 16),'title':'Dev Meeting'},
+      {'id':15, 'start': new Date(2010, 2, 28, 18), 'end': new Date(2010, 2, 28, 18, 45),'title':'Hair cut'},
+      {'id':16, 'start': new Date(2010, 2, 29, 12), 'end': new Date(2010, 2, 29, 13, 30),'title':'Lunch with Mike'},
+      {'id':17, 'start': new Date(2010, 2, 29, 14), 'end': new Date(2010, 2, 29, 16),'title':'Dev Meeting'},
+      {'id':18, 'start': new Date(2010, 2, 29, 18), 'end': new Date(2010, 2, 29, 18, 45),'title':'Hair cut'}
+    ]
+  };
 
-   <script type='text/javascript' src='libs/jquery-1.4.4.min.js'></script>
-   <script type='text/javascript' src='libs/jquery-ui-1.8.11.custom.min.js'></script>
-   <script type='text/javascript' src='libs/date.js'></script>
-	<script type='text/javascript' src='jquery.weekcalendar.js'></script>
-   <script type='text/javascript'>
+  $(document).ready(function() {
 
-	var eventData = {
-		events : [
-		   {"id":1, "start": new Date(2010, 9, 30, 12), "end": new Date(2010, 9, 30, 13, 30),"title":"Lunch with Mike"},
-		   {"id":2, "start": new Date(2010, 9, 30, 14), "end": new Date(2010, 9, 30, 16),"title":"Dev Meeting"},
-		   {"id":3, "start": new Date(2010, 9, 30, 18), "end": new Date(2010, 9, 30, 18, 45),"title":"Hair cut"},
-		   {"id":4, "start": new Date(2010, 9, 31, 12), "end": new Date(2010, 9, 31, 13, 30),"title":"Lunch with Mike"},
-		   {"id":5, "start": new Date(2010, 9, 31, 14), "end": new Date(2010, 9, 31, 16),"title":"Dev Meeting"},
-		   {"id":6, "start": new Date(2010, 9, 31, 18), "end": new Date(2010, 9, 31, 18, 45),"title":"Hair cut"},
-		   {"id":7, "start": new Date(2010, 10, 1, 12), "end": new Date(2010, 10, 1, 13, 30),"title":"Lunch with Mike"},
-		   {"id":8, "start": new Date(2010, 10, 1, 14), "end": new Date(2010, 10, 1, 16),"title":"Dev Meeting"},
-		   {"id":9, "start": new Date(2010, 10, 1, 18), "end": new Date(2010, 10, 1, 18, 45),"title":"Hair cut"},
-		   {"id":10, "start": new Date(2010, 2, 27, 12), "end": new Date(2010, 2, 27, 13, 30),"title":"Lunch with Mike"},
-		   {"id":11, "start": new Date(2010, 2, 27, 14), "end": new Date(2010, 2, 27, 16),"title":"Dev Meeting"},
-		   {"id":12, "start": new Date(2010, 2, 27, 18), "end": new Date(2010, 2, 27, 18, 45),"title":"Hair cut"},
-		   {"id":13, "start": new Date(2010, 2, 28, 12), "end": new Date(2010, 2, 28, 13, 30),"title":"Lunch with Mike"},
-		   {"id":14, "start": new Date(2010, 2, 28, 14), "end": new Date(2010, 2, 28, 16),"title":"Dev Meeting"},
-		   {"id":15, "start": new Date(2010, 2, 28, 18), "end": new Date(2010, 2, 28, 18, 45),"title":"Hair cut"},
-		   {"id":16, "start": new Date(2010, 2, 29, 12), "end": new Date(2010, 2, 29, 13, 30),"title":"Lunch with Mike"},
-		   {"id":17, "start": new Date(2010, 2, 29, 14), "end": new Date(2010, 2, 29, 16),"title":"Dev Meeting"},
-		   {"id":18, "start": new Date(2010, 2, 29, 18), "end": new Date(2010, 2, 29, 18, 45),"title":"Hair cut"}
-		]
-	};
-	   
-	$(document).ready(function() {
-
-		$('#calendar').weekCalendar({
-			date: new Date(2010, 2, 28),
-			timeslotsPerHour: 4,
-			height: function($calendar){
-				return $(window).height() - $("h1").outerHeight() - $(".description").outerHeight();
-			},
-			eventRender : function(calEvent, $event) {
-				if(calEvent.end.getTime() < new Date().getTime()) {
-					$event.css("backgroundColor", "#aaa");
-					$event.find(".time").css({"backgroundColor": "#999", "border":"1px solid #888"});
-				}
-			},
-			data:eventData
-		});
-
-	});
+    $('#calendar').weekCalendar({
+      data:eventData,
+      date: new Date(2010, 2, 28),
+      timeslotsPerHour: 4,
+      height: function($calendar){
+        return $(window).height() - $('h1').outerHeight() - $('.description').outerHeight();
+      },
+      eventRender : function(calEvent, $event) {
+        if (calEvent.end.getTime() < new Date().getTime()) {
+          $event.css('backgroundColor', '#aaa');
+          $event.find('.time').css({'backgroundColor': '#999', 'border':'1px solid #888'});
+        }
+      }
+    });
+  });
 
 </script>
 </head>
 <body>
-	<h1>Week Calendar Demo (DST correction)</h1>
-	<p class="description">This calendar demonstrates correction of Daylight Saving Time.</p>
-	<div id='calendar'></div>
+  <h1>Week Calendar Demo (DST correction)</h1>
+
+  <p class="description">
+    This calendar demonstrates correction of Daylight Saving Time.
+  </p>
+
+  <div id="calendar"></div>
 </body>
 </html>
