@@ -49,7 +49,23 @@
 				timeSeparator: ' to ',
 				startParam: 'start',
 				endParam: 'end',
-				businessHours: { start: 8, end: 18, limitDisplay: false },
+				businessHours: {
+					'getStart': function () {
+						if (!this.limitDisplay) {
+							return 0;
+						}
+						return this.start;
+					},
+					start: 8,
+					'getEnd': function () {
+						if (!this.limitDisplay) {
+							return 24;
+						}
+						return this.end;
+					},
+					end: 18,
+					limitDisplay: false
+				},
 				newEventText: 'New Event',
 				timeslotHeight: 20,
 				defaultEventLength: 2,
@@ -81,9 +97,7 @@
 				resizable: function (calEvent, element) {
 					return true;
 				},
-				eventClick: function (calEvent, element, dayFreeBusyManager,
-															  calendar, clickEvent) {
-				},
+				eventClick: function (calEvent, element, dayFreeBusyManager, calendar, clickEvent) {},
 				eventRender: function (calEvent, element) {
 					return element;
 				},
@@ -93,43 +107,26 @@
 				eventRefresh: function (calEvent, element) {
 					return element;
 				},
-				eventDrag: function (calEvent, element) {
-				},
-				eventDrop: function (calEvent, element) {
-				},
-				eventResize: function (calEvent, element) {
-				},
-				eventNew: function (calEvent, element, dayFreeBusyManager,
-															calendar, mouseupEvent) {
-				},
-				eventMouseover: function (calEvent, $event) {
-				},
-				eventMouseout: function (calEvent, $event) {
-				},
-				eventDelete: function (calEvent, element, dayFreeBusyManager,
-															  calendar, clickEvent) {
+				eventDrag: function (calEvent, element) {},
+				eventDrop: function (calEvent, element) {},
+				eventResize: function (calEvent, element) {},
+				eventNew: function (calEvent, element, dayFreeBusyManager, calendar, mouseupEvent) {},
+				eventMouseover: function (calEvent, $event) {},
+				eventMouseout: function (calEvent, $event) {},
+				eventDelete: function (calEvent, element, dayFreeBusyManager, calendar, clickEvent) {
 					calendar.weekCalendar('removeEvent', calEvent.id);
 				},
-				calendarBeforeLoad: function (calendar) {
-				},
-				calendarAfterLoad: function (calendar) {
-				},
-				noEvents: function () {
-				},
+				calendarBeforeLoad: function (calendar) {},
+				calendarAfterLoad: function (calendar) {},
+				noEvents: function () {},
 				eventHeader: function (calEvent, calendar) {
 					var options = calendar.weekCalendar('option');
 					var one_hour = 3600000;
 					var displayTitleWithTime = calEvent.end.getTime() - calEvent.start.getTime() <= (one_hour / options.timeslotsPerHour);
 					if (displayTitleWithTime) {
-						return calendar.weekCalendar(
-									'formatTime', calEvent.start) +
-									': ' + calEvent.title;
+						return calendar.weekCalendar('formatTime', calEvent.start) + ': ' + calEvent.title;
 					} else {
-						return calendar.weekCalendar(
-									'formatTime', calEvent.start) +
-								options.timeSeparator +
-								calendar.weekCalendar(
-									'formatTime', calEvent.end);
+						return calendar.weekCalendar('formatTime', calEvent.start) + options.timeSeparator + calendar.weekCalendar('formatTime', calEvent.end);
 					}
 				},
 				eventBody: function (calEvent, calendar) {
@@ -538,7 +535,10 @@
 
 					var newOptions = {};
 					newOptions[key] = value;
-					self._renderEvents({ events: currentEvents, options: newOptions }, self.element.find('.wc-day-column-inner'));
+					self._renderEvents({
+						events: currentEvents,
+						options: newOptions
+					}, self.element.find('.wc-day-column-inner'));
 				}
 			},
 
@@ -603,9 +603,7 @@
 						return;
 					}
 
-					var $calEvent = $target.hasClass('wc-cal-event') ?
-						$target :
-					  $target.parents('.wc-cal-event');
+					var $calEvent = $target.hasClass('wc-cal-event') ? $target : $target.parents('.wc-cal-event');
 					if (!$calEvent.length || !$calEvent.data('calEvent')) {
 						return;
 					}
@@ -619,9 +617,7 @@
 					}
 				}).mouseover(function (event) {
 					var $target = $(event.target);
-					var $calEvent = $target.hasClass('wc-cal-event') ?
-						$target :
-					  $target.parents('.wc-cal-event');
+					var $calEvent = $target.hasClass('wc-cal-event') ? $target : $target.parents('.wc-cal-event');
 
 					if (!$calEvent.length || !$calEvent.data('calEvent')) {
 						return;
@@ -704,7 +700,7 @@
 					calendarNavHtml += '<button class=\"wc-today\">' + options.buttonText.today + '</button>';
 					calendarNavHtml += '<button class=\"wc-next\">' + options.buttonText.nextWeek + '</button>';
 					calendarNavHtml += '</div>';
-					calendarNavHtml += '<h1 class=\"wc-title\"></h1>';
+					calendarNavHtml += '<div class=\"wc-title\"></div>';
 					calendarNavHtml += '</div>';
 
 					$(calendarNavHtml).appendTo($calendarContainer);
@@ -1119,13 +1115,19 @@
 
 						//if even created from a single click only, default height
 						if (createdFromSingleClick) {
-							$newEvent.css({ height: options.timeslotHeight * options.defaultEventLength }).show();
+							$newEvent.css({
+								height: options.timeslotHeight * options.defaultEventLength
+							}).show();
 						}
 						var top = parseInt($newEvent.css('top'));
 						var eventDuration = self._getEventDurationFromPositionedEventElement($weekDay, $newEvent, top);
 
 						$newEvent.remove();
-						var newCalEvent = { start: eventDuration.start, end: eventDuration.end, title: options.newEventText };
+						var newCalEvent = {
+							start: eventDuration.start,
+							end: eventDuration.end,
+							title: options.newEventText
+						};
 						var showAsSeparatedUser = options.showAsSeparateUsers && options.users && options.users.length;
 
 						if (showAsSeparatedUser) {
@@ -1244,10 +1246,9 @@
 					});
 				}
 				else if ($.isFunction(options.data)) {
-					options.data(weekStartDate, weekEndDate,
-						  function (data) {
-						  	self._renderEvents(data, $weekDayColumns);
-						  });
+					options.data(weekStartDate, weekEndDate, function (data) {
+						self._renderEvents(data, $weekDayColumns);
+					});
 				}
 				else if (options.data) {
 					self._renderEvents(options.data, $weekDayColumns);
@@ -1354,16 +1355,17 @@
 
 				// now update the calendar title
 				if (this.options.title) {
-					var date = this.options.date,
-						start = self._cloneDate(self.element.data('startDate')),
-						end = self._dateLastDayOfWeek(new Date(this._cloneDate(self.element.data('endDate')).getTime() - (MILLIS_IN_DAY))),
-						title = this._getCalendarTitle(),
-						date_format = options.dateFormat;
+					var date = this.options.date;
+					var calendarLimits = this._findCalendarLimits($weekDayColumns);
+					var start = calendarLimits.startDateTime;
+					var end = calendarLimits.endDateTime;
+					var date_format = options.dateFormat;
 
 					// replace the placeholders contained in the title
-					title = title.replace('%start%', self._formatDate(start, date_format));
-					title = title.replace('%end%', self._formatDate(end, date_format));
-					title = title.replace('%date%', self._formatDate(date, date_format));
+					var title = this._getCalendarTitle(start, end)
+						.replace('%start%', self._formatDate(start, date_format))
+						.replace('%end%', self._formatDate(end, date_format))
+						.replace('%date%', self._formatDate(date, date_format));
 
 					$('.wc-toolbar .wc-title', self.element).html(title);
 				}
@@ -1373,9 +1375,9 @@
 			/**
 			 * Gets the calendar raw title.
 			 */
-			_getCalendarTitle: function () {
+			_getCalendarTitle: function (start, end) {
 				if ($.isFunction(this.options.title)) {
-					return this.options.title(this.options.daysToShow);
+					return this.options.title(this.options.daysToShowm, start, end);
 				}
 
 				return this.options.title || '';
@@ -1387,7 +1389,8 @@
 			_renderEvents: function (data, $weekDayColumns) {
 				var self = this;
 				var options = this.options;
-				var eventsToRender, nbRenderedEvents = 0;
+				var eventsToRender;
+				var nbRenderedEvents = 0;
 
 				if (data.options) {
 					var updateLayout = false;
@@ -1420,61 +1423,81 @@
 					//render the freebusys
 					self._renderFreeBusys(data);
 				}
-				$.each(eventsToRender, function (i, calEvent) {
-					//render a multi day event as various event :
-					//thanks to http://github.com/fbeauchamp/jquery-week-calendar
-					var initialStart = new Date(calEvent.start);
-					var initialEnd = new Date(calEvent.end);
-					var maxHour = self.options.businessHours.limitDisplay ? self.options.businessHours.end : 24;
-					var minHour = self.options.businessHours.limitDisplay ? self.options.businessHours.start : 0;
-					var start = new Date(initialStart);
-					var startDate = self._formatDate(start, 'Ymd');
-					var endDate = self._formatDate(initialEnd, 'Ymd');
-					var $weekDay;
-					var isMultiday = false;
-
-					while (startDate < endDate) {
-						calEvent.start = start;
-						//end of this virual calEvent is set to the end of the day
-						var startFullYear = start.getFullYear();
-						var startDate = start.getDate();
-						var startMonth = start.getMonth();
-						var endHours = maxHour;
-						var endMinutes = 0;
-						var endSeconds = 0;
-						calEvent.end = new Date(startFullYear, startMonth, startDate, endHours, endMinutes, endSeconds);
-						if (($weekDay = self._findWeekDayForEvent(calEvent, $weekDayColumns))) {
-							self._renderEvent(calEvent, $weekDay);
-							nbRenderedEvents += 1;
+				var calendarLimits = self._findCalendarLimits($weekDayColumns);
+				var calendarLimitStartDateTime = calendarLimits.startDateTime;
+				var calendarLimitEndDateTime  = calendarLimits.endDateTime;
+				$.each(eventsToRender, function (i, calEvent) {	
+					if (calEvent.start < calendarLimitStartDateTime) {
+						if (calEvent.end < calendarLimitStartDateTime) {
+							// before limits
+							return;
 						}
-						//start is set to the begin of the new day
-						start.setDate(start.getDate() + 1);
-						start.setHours(minHour);
-						start.setMinutes(0);
-						start.setSeconds(0);
-						startDate = self._formatDate(start, 'Ymd');
-						isMultiday = true;
-					}
-					if (start <= initialEnd) {
-						calEvent.start = start;
-						calEvent.end = initialEnd;
-						if (((isMultiday && calEvent.start.getTime() != calEvent.end.getTime()) || !isMultiday) && ($weekDay = self._findWeekDayForEvent(calEvent, $weekDayColumns))) {
-							self._renderEvent(calEvent, $weekDay);
-							nbRenderedEvents += 1;
+						// setting the start to the start-limit of current view
+						var clonedStartDateTime = self._cloneDate(calendarLimitStartDateTime);
+						calEvent.start = clonedStartDateTime;
+						if (calendarLimitEndDateTime < calEvent.end) {
+							// setting the end to the end-limit of current view
+							var clonedEndDateTime = self._cloneDate(calendarLimitEndDateTime);
+							calEvent.end = clonedEndDateTime;
 						}
 					}
+					else if (calendarLimitEndDateTime < calEvent.start) {
+						// after limits
+						return;
+					}
+					else if (calendarLimitEndDateTime < calEvent.end) {
+						var clonedEndDateTime = self._cloneDate(calendarLimitEndDateTime);
+						calEvent.end = clonedEndDateTime;
+					}
 
-					// put back the initial start date
-					calEvent.start = initialStart;
+					nbRenderedEvents++;
+
+					var maxHour = self.options.businessHours.getEnd();
+					var minHour = self.options.businessHours.getStart();
+
+					var startDate;
+					var endDate = self._formatDate(calEvent.end, self._internalDateFormat);
+
+					var setStartDateFunc = function () {
+						startDate = self._formatDate(calEvent.start, self._internalDateFormat);
+					};
+					setStartDateFunc();
+
+					if (startDate < endDate) {
+						while (startDate < endDate) {
+							var date = self._adaptEndDateTimeOfCalEventForMultiDayEvent(calEvent, maxHour);
+
+							var $weekDayColumn = self._findWeekDayForEvent(calEvent, $weekDayColumns);
+							if ($weekDayColumn) {
+								self._renderEvent(calEvent, $weekDayColumn);
+							}
+
+							var start = calEvent.start;
+							start.setDate(date + 1);
+							start.setHours(minHour);
+							start.setMinutes(0);
+							start.setSeconds(0);
+
+							setStartDateFunc();
+						}
+						self._adaptEndDateTimeOfCalEventForMultiDayEvent(calEvent, maxHour);
+					}
+					var $weekDayColumn = self._findWeekDayForEvent(calEvent, $weekDayColumns);
+					if ($weekDayColumn) {
+						self._renderEvent(calEvent, $weekDayColumn);
+					}
 				});
 
-				$weekDayColumns.each(function () {
-					self._adjustOverlappingEvents($(this));
+				$weekDayColumns.each(function (index, element) {
+					var $weekDayColumn = $(element);
+					self._adjustOverlappingEvents($weekDayColumn);
 				});
 
 				options.calendarAfterLoad(self.element);
 
-				_hourLineTimeout && clearInterval(_hourLineTimeout);
+				if (_hourLineTimeout) {
+					clearInterval(_hourLineTimeout);
+				}
 
 				if (options.hourLine) {
 					self._drawCurrentHourLine();
@@ -1484,35 +1507,53 @@
 					}, 60 * 1000); // redraw the line each minute
 				}
 
-				!nbRenderedEvents && options.noEvents();
+				if (!nbRenderedEvents) {
+					options.noEvents();
+				}
+			},
+			_adaptEndDateTimeOfCalEventForMultiDayEvent: function (calEvent, maxHour) {
+				var start = calEvent.start;
+				var fullYear = start.getFullYear();
+				var month  = start.getMonth();
+				var date = start.getDate();
+				var hours = maxHour;
+
+				calEvent.end = new Date(fullYear, month, date, hours, 0, 0);
+
+				return date;
 			},
 
 			/*
 			  * Render a specific event into the day provided. Assumes correct
 			  * day for calEvent date
 			  */
-			_renderEvent: function (calEvent, $weekDay) {
+			_renderEvent: function (calEvent, $weekDays) {
 				var self = this;
 				var options = this.options;
 				if (calEvent.start.getTime() > calEvent.end.getTime()) {
 					return; // can't render a negative height
 				}
 
-				var eventClass, eventHtml, $calEventList, $modifiedEvent;
+				var $calEventList;
 
-				eventClass = calEvent.id ? 'wc-cal-event' : 'wc-cal-event wc-new-cal-event';
-				eventHtml = '<div class=\"' + eventClass + ' ui-corner-all\">';
-				eventHtml += '<div class=\"wc-time ui-corner-top\"></div>';
-				eventHtml += '<div class=\"wc-title\"></div></div>';
+				var eventClass = calEvent.id ? 'wc-cal-event' : 'wc-cal-event wc-new-cal-event';
+				var eventHtml = '<div class=\"' + eventClass + ' ui-corner-all\">' + 
+									'<div class=\"wc-time ui-corner-top\"></div>' +
+									'<div class=\"wc-title\"></div>' +
+								'</div>';
 
-				$weekDay.each(function () {
+				$weekDays.each(function (index, element) {
+					var $weekDay = $(element);
 					var $calEvent = $(eventHtml);
-					$modifiedEvent = options.eventRender(calEvent, $calEvent);
-					$calEvent = $modifiedEvent ? $modifiedEvent.appendTo($(this)) : $calEvent.appendTo($(this));
-					$calEvent.css({ lineHeight: (options.textSize + 2) + 'px', fontSize: options.textSize + 'px' });
+					var $modifiedEvent = options.eventRender(calEvent, $calEvent) || $calEvent;
+					$calEvent = $modifiedEvent.appendTo($weekDay);
+					$calEvent.css({
+						lineHeight: (options.textSize + 2) + 'px',
+						fontSize: options.textSize + 'px'
+					});
 
 					self._refreshEventDetails(calEvent, $calEvent);
-					self._positionEvent($(this), $calEvent);
+					self._positionEvent($weekDay, $calEvent);
 
 					//add to event list
 					if ($calEventList) {
@@ -1524,11 +1565,15 @@
 				});
 				$calEventList.show();
 
-				if (!options.readonly && options.resizable(calEvent, $calEventList)) {
-					self._addResizableToCalEvent(calEvent, $calEventList, $weekDay);
-				}
-				if (!options.readonly && options.draggable(calEvent, $calEventList)) {
-					self._addDraggableToCalEvent(calEvent, $calEventList);
+				if (!options.readonly) {
+					var isResizable = options.resizable(calEvent, $calEventList);
+					if (isResizable) {
+						self._addResizableToCalEvent(calEvent, $calEventList, $weekDay);
+					}
+					var isDraggable = options.draggable(calEvent, $calEventList);
+					if (isDraggable) {
+						self._addDraggableToCalEvent(calEvent, $calEventList);
+					}
 				}
 				options.eventAfterRender(calEvent, $calEventList);
 
@@ -1580,6 +1625,7 @@
 			  * Find groups of overlapping events
 			  */
 			_groupOverlappingEventElements: function ($weekDay) {
+				//TODO
 				var $events = $weekDay.find('.wc-cal-event:visible');
 				var complexEvents = jQuery.map($events, function (element, index) {
 					var $event = $(element);
@@ -1623,31 +1669,61 @@
 			  * find the weekday in the current calendar that the calEvent falls within
 			  */
 			_findWeekDayForEvent: function (calEvent, $weekDayColumns) {
-
-				var $weekDay,
-					options = this.options,
-					showAsSeparatedUser = options.showAsSeparateUsers && options.users && options.users.length,
-					user_ids = this._getEventUserId(calEvent);
+				var $weekDay;
+				var options = this.options;
+				var showAsSeparatedUser = options.showAsSeparateUsers && options.users && options.users.length;
+				var user_ids = this._getEventUserId(calEvent);
 
 				if (!$.isArray(user_ids)) {
 					user_ids = [user_ids];
 				}
 
-				$weekDayColumns.each(function (index, curDay) {
-					if ($(this).data('startDate').getTime() <= calEvent.start.getTime() &&
-						  $(this).data('endDate').getTime() >= calEvent.end.getTime() &&
-						  (!showAsSeparatedUser || $.inArray($(this).data('wcUserId'), user_ids) !== -1)
-					) {
+				$weekDayColumns.each(function (index, element) {
+					var $weekDayColumn = $(element);
+					var startDate = $weekDayColumn.data('startDate');
+					var endDate = $weekDayColumn.data('endDate');
+					if (startDate.getTime() <= calEvent.start.getTime()
+						&& endDate.getTime() >= calEvent.end.getTime()
+						&& (!showAsSeparatedUser || $.inArray($(this).data('wcUserId'), user_ids) !== -1)) {
 						if ($weekDay) {
-							$weekDay = $weekDay.add($(curDay));
+							$weekDay = $weekDay.add($weekDayColumn);
 						}
 						else {
-							$weekDay = $(curDay);
+							$weekDay = $weekDayColumn;
 						}
 					}
 				});
 
 				return $weekDay;
+			},
+
+			_internalDateFormat: 'Ymd',
+			_findCalendarLimits: function ($weekDayColumns) {
+				var self = this;
+				var result = {
+					'startDateTime': null,
+					'endDateTime': null
+				};
+				var maxHour = self.options.businessHours.getEnd();
+				var minHour = self.options.businessHours.getStart();
+				$weekDayColumns.each(function (index, element) {
+					var $weekDayColumn = $(element);
+					var startDateTime = $weekDayColumn.data('startDate');
+					if (!result.startDateTime) {
+						var clonedStartDateTime = self._cloneDate(startDateTime);
+						clonedStartDateTime.setHours(minHour);
+						clonedStartDateTime.setMinutes(0);
+						clonedStartDateTime.setSeconds(0);
+						result.startDateTime = clonedStartDateTime;
+					}
+					var clonedEndDateTime = self._cloneDate(startDateTime);
+					clonedEndDateTime.setHours(maxHour);
+					clonedEndDateTime.setMinutes(0);
+					clonedEndDateTime.setSeconds(0);
+					result.endDateTime = clonedEndDateTime; 
+					
+				});
+				return result;
 			},
 
 			/*
@@ -1807,7 +1883,10 @@
 						var top = Math.round(parseInt(ui.position.top));
 						var eventDuration = self._getEventDurationFromPositionedEventElement($weekDay, $calEvent, top);
 						var calEvent = $calEvent.data('calEvent');
-						var newCalEvent = $.extend(true, {}, calEvent, { start: eventDuration.start, end: eventDuration.end });
+						var newCalEvent = $.extend(true, {}, calEvent, {
+							start: eventDuration.start,
+							end: eventDuration.end
+						});
 						var showAsSeparatedUser = options.showAsSeparateUsers && options.users && options.users.length;
 						if (showAsSeparatedUser) {
 							// we may have dragged the event on column with a new user.
