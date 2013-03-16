@@ -61,7 +61,9 @@
         buttonText: {
           today: 'today',
           lastWeek: 'previous',
-          nextWeek: 'next'
+          nextWeek: 'next',
+          lastMonth: 'previous month',
+          nextMonth: 'next month'
         },
         switchDisplay: {},
         scrollToHourMillis: 500,
@@ -340,11 +342,31 @@
       },
 
       /*
+        * Go to the next month relative to the currently displayed week
+        */
+      prevMonth: function() {
+          //minus 29 days to be sure of being in prev week - allows for daylight savings or other anomolies
+          var newDate = new Date(this.element.data('startDate').getTime() - (MILLIS_IN_MONTH + MILLIS_IN_DAY));
+          this._clearCalendar();
+          this._loadCalEvents(newDate);
+      },
+
+      /*
         * Go to the next week relative to the currently displayed week
         */
       nextWeek: function() {
           //add 8 days to be sure of being in prev week - allows for daylight savings or other anomolies
           var newDate = new Date(this.element.data('startDate').getTime() + MILLIS_IN_WEEK + MILLIS_IN_DAY);
+          this._clearCalendar();
+          this._loadCalEvents(newDate);
+      },
+
+      /*
+        * Go to the next month relative to the currently displayed week
+        */
+      nextMonth: function() {
+          //add 29 days to be sure of being in prev week - allows for daylight savings or other anomolies
+          var newDate = new Date(this.element.data('startDate').getTime() + MILLIS_IN_MONTH + MILLIS_IN_DAY);
           this._clearCalendar();
           this._loadCalEvents(newDate);
       },
@@ -499,6 +521,14 @@
         this._loadCalEvents(newDate);
       },
 
+      prevMonth: function() {
+        var newDate = new Date(this.element.data('startDate').getTime());
+        newDate.setDate(newDate.getDate() - (this.options.daysToShow * 4));
+
+        this._clearCalendar();
+        this._loadCalEvents(newDate);
+      },
+
       prev: function() {
         if (this._startOnFirstDayOfWeek()) {
           return this.prevWeek();
@@ -509,6 +539,15 @@
         this._clearCalendar();
         this._loadCalEvents(newDate);
       },
+
+      nextMonth: function() {
+        var newDate = new Date(this.element.data('startDate').getTime());
+        newDate.setDate(newDate.getDate() + (this.options.daysToShow * 4));
+
+        this._clearCalendar();
+        this._loadCalEvents(newDate);
+      },
+
       getCurrentFirstDay: function() {
         return this._dateFirstDayOfWeek(this.options.date || new Date());
       },
@@ -700,9 +739,15 @@
             calendarNavHtml += '<div class=\"ui-widget-header wc-toolbar\">';
               calendarNavHtml += '<div class=\"wc-display\"></div>';
               calendarNavHtml += '<div class=\"wc-nav\">';
+	    if (options.showMonthArrows){
+                calendarNavHtml += '<button class=\"wc-prev-month\">' + options.buttonText.lastMonth + '</button>';
+	    }
                 calendarNavHtml += '<button class=\"wc-prev\">' + options.buttonText.lastWeek + '</button>';
                 calendarNavHtml += '<button class=\"wc-today\">' + options.buttonText.today + '</button>';
                 calendarNavHtml += '<button class=\"wc-next\">' + options.buttonText.nextWeek + '</button>';
+	    if (options.showMonthArrows){
+                calendarNavHtml += '<button class=\"wc-next-month\">' + options.buttonText.nextMonth + '</button>';
+	    }
               calendarNavHtml += '</div>';
               calendarNavHtml += '<h1 class=\"wc-title\"></h1>';
             calendarNavHtml += '</div>';
@@ -726,6 +771,15 @@
                   return false;
                 });
 
+	    $calendarContainer.find('.wc-nav .wc-prev-month')
+		.button({
+		    text: false,
+		    icons: {primary: 'ui-icon-seek-prev'}})
+		.click(function() {
+		    self.element.weekCalendar('prevMonth');
+		    return false;
+                });
+
             $calendarContainer.find('.wc-nav .wc-next')
               .button({
                 text: false,
@@ -733,6 +787,15 @@
               .click(function() {
                   self.element.weekCalendar('next');
                   return false;
+                });
+
+	    $calendarContainer.find('.wc-nav .wc-next-month')
+		.button({
+		    text: false,
+		    icons: {primary: 'ui-icon-seek-next'}})
+		.click(function() {
+		    self.element.weekCalendar('nextMonth');
+		    return false;
                 });
 
             // now add buttons to switch display
@@ -2676,6 +2739,7 @@
 
     var MILLIS_IN_DAY = 86400000;
     var MILLIS_IN_WEEK = MILLIS_IN_DAY * 7;
+    var MILLIS_IN_MONTH = MILLIS_IN_DAY * 28;
 
     /* FREE BUSY MANAGERS */
     var FreeBusyProto = {
