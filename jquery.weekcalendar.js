@@ -1731,6 +1731,35 @@
           var adjustedStart, adjustedEnd;
           var self = this;
 
+          var freeBusyManager = self.getFreeBusyManagerForEvent(newCalEvent);
+          $.each(freeBusyManager.getFreeBusys(newCalEvent.start, newCalEvent.end), function() {
+              if (!this.getOption('free')) {
+
+                  if (newCalEvent.start.getTime() == this.getStart().getTime() &&
+                      newCalEvent.end.getTime() > this.getEnd().getTime()) {
+
+                      adjustedStart = this.getEnd();
+                  }
+
+                  if (newCalEvent.end.getTime() == this.getEnd().getTime() &&
+                      newCalEvent.start.getTime() < this.getStart().getTime()) {
+
+                      adjustedEnd = this.getStart();
+                  }
+
+                  if (oldCalEvent.resizable == false ||
+                      (newCalEvent.end.getTime() > this.getEnd().getTime() &&
+                       newCalEvent.start.getTime() < this.getStart().getTime()) ||
+                      (newCalEvent.end.getTime() == this.getEnd().getTime() &&
+                       newCalEvent.start.getTime() == this.getStart().getTime())) {
+
+                      adjustedStart = oldCalEvent.start;
+                      adjustedEnd = oldCalEvent.end;
+                      newCalEvent.userId = oldCalEvent.userId;
+                  }
+              }
+          });
+
           $weekDay.find('.wc-cal-event').not($calEvent).each(function() {
             var currentCalEvent = $(this).data('calEvent');
 
@@ -1755,6 +1784,7 @@
 
                 adjustedStart = oldCalEvent.start;
                 adjustedEnd = oldCalEvent.end;
+                newCalEvent.userId = oldCalEvent.userId;
                 return false;
             }
 
