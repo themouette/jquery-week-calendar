@@ -1080,6 +1080,8 @@
                 $target.append($newEvent);
 
                 var columnOffset = $target.offset().top;
+				if($.browser.msie && $.browser.version < 9)
+					columnOffset += window.document.documentElement.scrollTop;
                 var clickY = event.pageY - columnOffset;
                 var clickYRounded = (clickY - (clickY % options.timeslotHeight)) / options.timeslotHeight;
                 var topPosition = clickYRounded * options.timeslotHeight;
