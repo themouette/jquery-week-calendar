@@ -1785,7 +1785,7 @@
 				var startMillis = this._getDSTdayShift(calEvent.start).getTime() - this._getDSTdayShift(new Date(calEvent.start.getFullYear(), calEvent.start.getMonth(), calEvent.start.getDate(), firstHourDisplayed)).getTime();
 				var eventMillis = this._getDSTdayShift(calEvent.end).getTime() - this._getDSTdayShift(calEvent.start).getTime();
 				var pxTop = pxPerMillis * startMillis;
-				var pxHeight = pxPerMillis * eventMillis;
+				var pxHeight = pxPerMillis * eventMillis - 2;
 				//var pxHeightFallback = pxPerMillis * (60 / options.timeslotsPerHour) * 60 * 1000;
 				$calEvent.css({ top: pxTop, height: pxHeight || (pxPerMillis * 3600000 / options.timeslotsPerHour) });
 			},
