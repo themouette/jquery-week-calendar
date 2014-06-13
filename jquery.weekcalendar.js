@@ -1452,39 +1452,41 @@
 
 					nbRenderedEvents++;
 
-					var maxHour = self.options.businessHours.getEnd();
-					var minHour = self.options.businessHours.getStart();
+					var maxHours = self.options.businessHours.getEnd();
+					var minHours = self.options.businessHours.getStart();
 
-					var startDate;
-					var endDate = self._formatDate(calEvent.end, self._internalDateFormat);
+					var originalStartDateTime = self._cloneDate(calEvent.start);
+					var originalEndDateTime = self._cloneDate(calEvent.end);
 
-					var setStartDateFunc = function () {
-						startDate = self._formatDate(calEvent.start, self._internalDateFormat);
-					};
-					setStartDateFunc();
+					var formattedStartDate = self._formatDate(calEvent.start, self._internalDateFormat);
+					var formattedEndDate = self._formatDate(calEvent.end, self._internalDateFormat);
+					
+					var formattedCurrentDate;
+					while ((formattedCurrentDate = self._formatDate(calEvent.start, self._internalDateFormat)) <= formattedEndDate)
+					{
+						self._adaptStartDateTimeOfCalEvent(calEvent, minHours);
 
-					if (startDate < endDate) {
-						while (startDate < endDate) {
-							var date = self._adaptEndDateTimeOfCalEventForMultiDayEvent(calEvent, maxHour);
-
-							var $weekDayColumn = self._findWeekDayForEvent(calEvent, $weekDayColumns);
-							if ($weekDayColumn) {
-								self._renderEvent(calEvent, $weekDayColumn);
-							}
-
-							var start = calEvent.start;
-							start.setDate(date + 1);
-							start.setHours(minHour);
-							start.setMinutes(0);
-							start.setSeconds(0);
-
-							setStartDateFunc();
+						var startDateTime = calEvent.start;
+						if (formattedCurrentDate == formattedEndDate) {
+							calEvent.end = originalEndDateTime;
 						}
-						self._adaptEndDateTimeOfCalEventForMultiDayEvent(calEvent, maxHour);
-					}
-					var $weekDayColumn = self._findWeekDayForEvent(calEvent, $weekDayColumns);
-					if ($weekDayColumn) {
-						self._renderEvent(calEvent, $weekDayColumn);
+						else {
+							var endDateTime = self._cloneDate(startDateTime);
+							endDateTime.setHours(maxHours);
+							calEvent.end = endDateTime;
+						}
+						self._adaptEndDateTimeOfCalEvent(calEvent, maxHours);
+
+						var $weekDayColumn = self._findWeekDayForEvent(calEvent, $weekDayColumns);
+						if ($weekDayColumn) {
+							self._renderEvent(calEvent, $weekDayColumn);
+						}
+						
+						var startDateTimeDate = startDateTime.getDate();
+						startDateTime.setDate(startDateTimeDate + 1);
+						startDateTime.setHours(minHours);
+						startDateTime.setMinutes(0);
+						startDateTime.setSeconds(0);
 					}
 				});
 
@@ -1511,18 +1513,20 @@
 					options.noEvents();
 				}
 			},
-			_adaptEndDateTimeOfCalEventForMultiDayEvent: function (calEvent, maxHour) {
-				var start = calEvent.start;
-				var fullYear = start.getFullYear();
-				var month  = start.getMonth();
-				var date = start.getDate();
-				var hours = maxHour;
-
-				calEvent.end = new Date(fullYear, month, date, hours, 0, 0);
-
-				return date;
+			_adaptStartDateTimeOfCalEvent: function (calEvent, minHours) {
+				var startDateTime = calEvent.start;
+				var startDateTimeHours = startDateTime.getHours();
+				if (startDateTimeHours < minHours) {
+					startDateTime.setHours(minHours);
+				}
 			},
-
+			_adaptEndDateTimeOfCalEvent: function (calEvent, maxHours) {
+				var endDateTime = calEvent.end;
+				var endDateTimeHours = endDateTime.getHours();
+				if (maxHours < endDateTimeHours) {
+					endDateTime.setHours(maxHours);
+				}
+			},
 			/*
 			  * Render a specific event into the day provided. Assumes correct
 			  * day for calEvent date
