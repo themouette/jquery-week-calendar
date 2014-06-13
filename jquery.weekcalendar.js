@@ -1593,45 +1593,15 @@
 				if (!self.options.allowCalEventOverlap) {
 					return;
 				}
-				var groupsList = self._groupOverlappingEventElements($weekDay);
-				if (!groupsList) {
-					return;
-				}
-				$.each(groupsList, function (index, element) {
-					var groupings = element;
-					$.each(groupings, function (index, element) {
-						var groupedCalEvents = element;
-
-						// do we want events to be displayed as overlapping
-						if (self.options.overlapEventsSeparate) {
-							var newWidth = self.options.totalEventsWidthPercentInOneColumn / groupings.length;
-							var newLeft = index * newWidth;
-						} else {
-							// TODO what happens when the group has more than 10 elements
-							var newWidth = self.options.totalEventsWidthPercentInOneColumn - ((groupings.length - 1) * 10);
-							var newLeft = index * 10;
-						}
-						var resetZIndexOfGroup = function () {
-							groupedCalEvents.css({
-								'z-index': 1
-							});
-						};
-						$.each(groupedCalEvents, function (index, element) {
-							var $element = $(element);
-							// bring mouseovered event to the front
-							if (!self.options.overlapEventsSeparate) {
-								$element.bind('mouseover.z-index', function () {
-									resetZIndexOfGroup();
-									$element.css({
-										'z-index': 3
-									});
-								});
-							}
-							$element.css({
-								width: newWidth + '%',
-								left: newLeft + '%',
-								right: 0
-							});
+				var partitions = self._groupOverlappingEventElements($weekDay);
+				var widthOfPartition = self.options.totalEventsWidthPercentInOneColumn / partitions.length;
+				jQuery.each(partitions, function (index, partition) {
+					var left = widthOfPartition * index;
+					jQuery.each(partition, function (index, $event) {
+						$event.css({
+							width: widthOfPartition + '%',
+							left: left + '%',
+							right: 0
 						});
 					});
 				});
@@ -1643,9 +1613,6 @@
 			  */
 			_groupOverlappingEventElements: function ($weekDay) {
 				var $events = $weekDay.find('.wc-cal-event:visible');
-				if (!$events.length) {
-					return;
-				}
 				var complexEvents = jQuery.map($events, function (element, index) {
 					var $event = $(element);
 					var position = $event.position();
@@ -1665,22 +1632,41 @@
 					}
 					return a.bottom - b.bottom;
 				});
-				var groups = new Array();
-				var currentGroup;
-				var lastBottom = -1;
+				var groups = [];
 				jQuery.each(complexEvents, function (index, element) {
 					var complexEvent = element;
 					var $event = complexEvent.event;
-					var top = complexEvent.top;
-					var bottom = complexEvent.bottom;
-					if (!currentGroup || lastBottom <= top) {
-						currentGroup = new Array();
-						groups.push(currentGroup);
-					}
-					currentGroup.push($event);
-					lastBottom = Math.max(lastBottom, bottom);
+					var group;
+					jQuery.each(groups, function (index, element) {
+						if (group) {
+							return;
+						}
+						if (complexEvent.bottom < element.top) {
+							group = element;
+							group.top = complexEvent.top;
+						} else if (element.bottom < complexEvent.top) {
+							group = element;
+							group.bottom = complexEvent.bottom;
+						}
+					});
+					if (!group) {
+						group = {
+							'top': complexEvent.top,
+							'bottom': complexEvent.bottom,
+							'partition': []
+						};
+						groups.push(group);
+					}/* else { // this is handled by line 1640ff
+						group.top = Math.min(group.top, complexEvent.top);
+						group.bottom = Math.max(group.bottom, complexEvent.bottom);
+					}*/
+					group.partition.push($event);
 				});
-				return groups;
+				var partitions = [];
+				jQuery.each(groups, function (index, element) {
+					partitions.push(element.partition);
+				});
+				return partitions;
 			},
 
 
