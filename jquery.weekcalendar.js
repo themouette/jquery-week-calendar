@@ -745,7 +745,7 @@
                       _label.html(label);
                       _input.val(option);
                       if (parseInt(self.options.daysToShow, 10) === parseInt(option, 10)) {
-                        _input.attr('checked', 'checked');
+                        _input.prop('checked', true);
                       }
                       $container
                         .append(_input)
