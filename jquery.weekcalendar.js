@@ -745,7 +745,7 @@
                       _label.html(label);
                       _input.val(option);
                       if (parseInt(self.options.daysToShow, 10) === parseInt(option, 10)) {
-                        _input.attr('checked', 'checked');
+                        _input.prop('checked', true);
                       }
                       $container
                         .append(_input)
@@ -2020,17 +2020,13 @@
        */
       _disableTextSelect: function($elements) {
           $elements.each(function() {
-            if ($.browser.mozilla) {//Firefox
-                $(this).css('MozUserSelect', 'none');
-            } else if ($.browser.msie) {//IE
-                $(this).bind('selectstart', function() {
-                  return false;
-                });
-            } else {//Opera, etc.
-                $(this).mousedown(function() {
-                  return false;
-                });
-            }
+              //MOD: yk
+              $(this)
+              .attr('unselectable', 'on')
+              .css('user-select', 'none')
+              .css('MozUserSelect', 'none')
+              .on('selectstart', false)
+              .on('mousedown', false);
           });
       },
 
