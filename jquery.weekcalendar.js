@@ -864,7 +864,7 @@
           Find a way to handle it
         */
         $calendarContainer.find('.wc-time-header-cell').css({
-          height: (options.timeslotHeight * options.timeslotsPerHour) - 11,
+          height: (options.timeslotHeight * options.timeslotsPerHour) - 1,
           padding: 5
         });
         //add the user data to every impacted column
